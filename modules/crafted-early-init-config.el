@@ -11,6 +11,7 @@
 
 ;;; Code:
 
+(setq-local context "crafted-package-config:") ;; for log messages
 (require 'package)
 
 ;;; Setup Emacs Lisp Package Archives (ELPAs)
@@ -87,16 +88,16 @@ Run this in the `before-init-hook'"
     (package-initialize)
 
     (require 'seq)
-    (message "crafted-package-config: checking package archives")
+    (message "%s checking package archives" context)
     (cond ((seq-empty-p package-archive-contents)
            (progn
-             (message "crafted-package-config: package archives empty, initalizing")
+             (message "%s package archives empty, initalizing" context)
              (package-refresh-contents)))
           ((crafted-package-archives-stale-p)
            (progn
-             (message "crafted-package-config: package archives stale, refreshing")
+             (message "%s package archives stale, refreshing" context)
              (package-refresh-contents t))))
-    (message "crafted-package-config: package system initialized!")))
+    (message "%s package system initialized!" context)))
 
 ;;; Initialize package system
 ;; Refresh archives if necessary before init file runs.
