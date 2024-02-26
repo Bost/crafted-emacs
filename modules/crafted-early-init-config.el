@@ -96,7 +96,9 @@ Run this in the `before-init-hook'"
           ((crafted-package-archives-stale-p)
            (progn
              (message "%s package archives stale, refreshing" context)
-             (package-refresh-contents t))))
+             (package-refresh-contents t)))
+          (t
+           (message "%s package archives fresh, do nothing" context)))
     (message "%s package system initialized!" context)))
 
 ;;; Initialize package system
