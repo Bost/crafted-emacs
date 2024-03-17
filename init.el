@@ -199,7 +199,7 @@ The return value is nil if no font was found, truthy otherwise."
 ;; https://github.com/minad/goggles
 
 ;; alternative to copy-sexp.el
-;; TODO (pulse-momentary-highlight-region ...) ;; built-in 
+;; TODO (pulse-momentary-highlight-region ...) ;; built-in
 
 ;; For collaborative editing we need to setup a crdt sever at first!
 ;; The docs is not clear about that.
@@ -585,53 +585,53 @@ Some binding snippets / examples:
   )
 (my=eval-bind-keys-and-chords)
 
-  ;; TODO This doesn't work:
-  ;; (with-eval-after-load 'magit-status-mode
-  ;;   (bind-keys :map magit-status-mode-map
-  ;;              ;; TODO use my cycle functionality
-  ;;              ("s-\\" . magit-diff-toggle-refine-hunk)))
+;; TODO This doesn't work:
+;; (with-eval-after-load 'magit-status-mode
+;;   (bind-keys :map magit-status-mode-map
+;;              ;; TODO use my cycle functionality
+;;              ("s-\\" . magit-diff-toggle-refine-hunk)))
 
-  ;; TODO This doesn't work:
-  ;; (with-eval-after-load 'magit-revision-mode
-  ;;   (bind-keys :map magit-revision-mode-map
-  ;;              ;; TODO use my cycle functionality
-  ;;              ("s-\\" . magit-diff-toggle-refine-hunk)))
+;; TODO This doesn't work:
+;; (with-eval-after-load 'magit-revision-mode
+;;   (bind-keys :map magit-revision-mode-map
+;;              ;; TODO use my cycle functionality
+;;              ("s-\\" . magit-diff-toggle-refine-hunk)))
 
-  (with-eval-after-load 'magit-mode
-    (bind-keys :map magit-mode-map
-               ;; Workaround for the
-               ;; https://github.com/emacs-evil/evil-collection/issues/554
-               ("C-v" . evil-visual-line)
-               ("1"   . magit-section-show-level-1-all)
-               ("2"   . magit-section-show-level-2-all)
-               ("3"   . magit-section-show-level-3-all)
-               ("4"   . magit-section-show-level-4-all)
-               ;; overshadows `(digit-argument <n>)'; use C-M-<n> instead
-               ("C-1" . magit-section-show-level-1)
-               ("C-2" . magit-section-show-level-2)
-               ("C-3" . magit-section-show-level-3)
-               ("C-4" . magit-section-show-level-4)))
+(with-eval-after-load 'magit-mode
+  (bind-keys :map magit-mode-map
+             ;; Workaround for the
+             ;; https://github.com/emacs-evil/evil-collection/issues/554
+             ("C-v" . evil-visual-line)
+             ("1"   . magit-section-show-level-1-all)
+             ("2"   . magit-section-show-level-2-all)
+             ("3"   . magit-section-show-level-3-all)
+             ("4"   . magit-section-show-level-4-all)
+             ;; overshadows `(digit-argument <n>)'; use C-M-<n> instead
+             ("C-1" . magit-section-show-level-1)
+             ("C-2" . magit-section-show-level-2)
+             ("C-3" . magit-section-show-level-3)
+             ("C-4" . magit-section-show-level-4)))
 
-  (defun my=evil-keybindings-in-term (map)
-    "Fix evil keybindings in terminals. Alternatively just disable evil-mode:
+(defun my=evil-keybindings-in-term (map)
+  "Fix evil keybindings in terminals. Alternatively just disable evil-mode:
   (evil-set-initial-state 'term-mode 'emacs)
 See also:
 - evil-collection-term-setup
 - \"TODO: Add support for normal-state editing.\"
 https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collection-term.el#L61
 "
-    (evil-collection-define-key 'insert map (kbd "S-<up>")   #'previous-line)
-    (evil-collection-define-key 'insert map (kbd "S-<down>") #'next-line)
-    (evil-collection-define-key 'insert map (kbd "C-<up>")   #'previous-line)
-    (evil-collection-define-key 'insert map (kbd "C-<down>") #'next-line)
-    (evil-collection-define-key 'insert map (kbd "<delete>") #'term-send-del)
-    (evil-collection-define-key 'insert map (kbd "<prior>")  #'evil-scroll-page-up)
-    (evil-collection-define-key 'insert map (kbd "<next>")   #'evil-scroll-page-down)
+  (evil-collection-define-key 'insert map (kbd "S-<up>")   #'previous-line)
+  (evil-collection-define-key 'insert map (kbd "S-<down>") #'next-line)
+  (evil-collection-define-key 'insert map (kbd "C-<up>")   #'previous-line)
+  (evil-collection-define-key 'insert map (kbd "C-<down>") #'next-line)
+  (evil-collection-define-key 'insert map (kbd "<delete>") #'term-send-del)
+  (evil-collection-define-key 'insert map (kbd "<prior>")  #'evil-scroll-page-up)
+  (evil-collection-define-key 'insert map (kbd "<next>")   #'evil-scroll-page-down)
 ;;; simple ~<prior>~, ~<next>~ (i.e. pgup / pgdown) don't even get registered by
 ;;; Emacs. See: xfconf-query -c xfce4-keyboard-shortcuts -lv | grep Page
-    ;; (evil-collection-define-key 'insert map (kbd "s-<prior>") #'evil-scroll-page-up)
-    ;; (evil-collection-define-key 'insert map (kbd "s-<next>")  #'evil-scroll-page-down)
-    )
+  ;; (evil-collection-define-key 'insert map (kbd "s-<prior>") #'evil-scroll-page-up)
+  ;; (evil-collection-define-key 'insert map (kbd "s-<next>")  #'evil-scroll-page-down)
+  )
 
 ;;; (funcall
 ;;;  (-compose
@@ -644,150 +644,150 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
 ;;;; `multi-term'
 ;;;   (lambda (body) (with-eval-after-load 'multi-term body)))
 ;;;
-  (with-eval-after-load 'multi-term
-    ;; term-mode-map is apparently not needed
-    (mapcar #'my=evil-keybindings-in-term '(term-raw-map)))
+(with-eval-after-load 'multi-term
+  ;; term-mode-map is apparently not needed
+  (mapcar #'my=evil-keybindings-in-term '(term-raw-map)))
 
-  (bind-keys :map dired-mode-map
-             ("<f5>"        . tw-revert-buffer-no-confirm)
-             ;; ("<f5>"        . revert-buffer)
+(bind-keys :map dired-mode-map
+           ("<f5>"        . tw-revert-buffer-no-confirm)
+           ;; ("<f5>"        . revert-buffer)
 
-             ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
-             ("C-s-h"       . tw-dired-dotfiles-toggle)
-             ("<backspace>" . (lambda () (interactive)
-                                (find-alternate-file "..")))
-             ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
-             ;; ("<return>"    . dired-find-alternate-file)
-             ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
-             ;; asks for file instead of opening it
-             ;; ("<return>"    . dired-x-find-file)
-             ("<return>"    . dired-find-file) ;; default
-             ("<S-delete>"  . tw-dired-do-delete))
-  ;; (with-eval-after-load 'dired-mode
-  ;;   (bind-keys :map dired-mode-map
-  ;;              ("<f5>"        . tw-revert-buffer-no-confirm)
-  ;;              ;; ("<f5>"        . revert-buffer)
+           ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
+           ("C-s-h"       . tw-dired-dotfiles-toggle)
+           ("<backspace>" . (lambda () (interactive)
+                              (find-alternate-file "..")))
+           ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
+           ;; ("<return>"    . dired-find-alternate-file)
+           ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
+           ;; asks for file instead of opening it
+           ;; ("<return>"    . dired-x-find-file)
+           ("<return>"    . dired-find-file) ;; default
+           ("<S-delete>"  . tw-dired-do-delete))
+;; (with-eval-after-load 'dired-mode
+;;   (bind-keys :map dired-mode-map
+;;              ("<f5>"        . tw-revert-buffer-no-confirm)
+;;              ;; ("<f5>"        . revert-buffer)
 
-  ;;              ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
-  ;;              ("C-s-h"       . tw-dired-dotfiles-toggle)
-  ;;              ("<backspace>" . (lambda () (interactive)
-  ;;                                 (find-alternate-file "..")))
-  ;;              ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
-  ;;              ;; ("<return>"    . dired-find-alternate-file)
-  ;;              ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
-  ;;              ;; asks for file instead of opening it
-  ;;              ;; ("<return>"    . dired-x-find-file)
-  ;;              ("<return>"    . dired-find-file) ;; default
-  ;;              ("<S-delete>"  . tw-dired-do-delete)))
+;;              ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
+;;              ("C-s-h"       . tw-dired-dotfiles-toggle)
+;;              ("<backspace>" . (lambda () (interactive)
+;;                                 (find-alternate-file "..")))
+;;              ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
+;;              ;; ("<return>"    . dired-find-alternate-file)
+;;              ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
+;;              ;; asks for file instead of opening it
+;;              ;; ("<return>"    . dired-x-find-file)
+;;              ("<return>"    . dired-find-file) ;; default
+;;              ("<S-delete>"  . tw-dired-do-delete)))
 
-  ;; (eval-after-load "dired"
-  ;;   '(progn
-  ;;      (defadvice dired-advertised-find-file (around dired-subst-directory
-  ;;                                                    activate)
-  ;;        "Replace current buffer if file is a directory."
-  ;;        (interactive)
-  ;;        (message "%s" #'dired-advertised-find-file)
-  ;;        (let* ((orig (current-buffer))
-  ;;               ;; (filename (dired-get-filename))
-  ;;               (filename (dired-get-filename t t))
-  ;;               (bye-p (file-directory-p filename)))
-  ;;          ad-do-it
-  ;;          (when (and bye-p (not (string-match "[/\\\\]\\.$" filename)))
-  ;;            (kill-buffer orig))))))
+;; (eval-after-load "dired"
+;;   '(progn
+;;      (defadvice dired-advertised-find-file (around dired-subst-directory
+;;                                                    activate)
+;;        "Replace current buffer if file is a directory."
+;;        (interactive)
+;;        (message "%s" #'dired-advertised-find-file)
+;;        (let* ((orig (current-buffer))
+;;               ;; (filename (dired-get-filename))
+;;               (filename (dired-get-filename t t))
+;;               (bye-p (file-directory-p filename)))
+;;          ad-do-it
+;;          (when (and bye-p (not (string-match "[/\\\\]\\.$" filename)))
+;;            (kill-buffer orig))))))
 
-  ;; (eval-after-load "dired"
-  ;;   ;; don't remove `other-window', the caller expects it to be there
-  ;;   '(defun dired-up-directory (&optional other-window)
-  ;;      "Run Dired on parent directory of current directory."
-  ;;      (interactive "P")
-  ;;      (let* ((dir (dired-current-directory))
-  ;;             (orig (current-buffer))
-  ;;             (up (file-name-directory (directory-file-name dir))))
-  ;;        (or (dired-goto-file (directory-file-name dir))
-  ;;            ;; Only try dired-goto-subdir if buffer has more than one dir.
-  ;;            (and (cdr dired-subdir-alist)
-  ;;                 (dired-goto-subdir up))
-  ;;            (progn
-  ;;              (kill-buffer orig)
-  ;;              (dired up)
-  ;;              (dired-goto-file dir))))))
+;; (eval-after-load "dired"
+;;   ;; don't remove `other-window', the caller expects it to be there
+;;   '(defun dired-up-directory (&optional other-window)
+;;      "Run Dired on parent directory of current directory."
+;;      (interactive "P")
+;;      (let* ((dir (dired-current-directory))
+;;             (orig (current-buffer))
+;;             (up (file-name-directory (directory-file-name dir))))
+;;        (or (dired-goto-file (directory-file-name dir))
+;;            ;; Only try dired-goto-subdir if buffer has more than one dir.
+;;            (and (cdr dired-subdir-alist)
+;;                 (dired-goto-subdir up))
+;;            (progn
+;;              (kill-buffer orig)
+;;              (dired up)
+;;              (dired-goto-file dir))))))
 
-  (with-eval-after-load 'paredit-mode
-    (bind-keys :map paredit-mode-map
-               ;; these keybindings don't work in the cider-repl-mode-map
-               ("<C-right>"    . right-word)
-               ("<C-left>"     . left-word)))
+(with-eval-after-load 'paredit-mode
+  (bind-keys :map paredit-mode-map
+             ;; these keybindings don't work in the cider-repl-mode-map
+             ("<C-right>"    . right-word)
+             ("<C-left>"     . left-word)))
 
-  (defun my=clj-bind-keys-and-chords (map)
-    (bind-keys :map map
-               ;; on German keyboard the #-key is next to the Enter-key
-               ("C-s-\\" . tw-clj-toggle-reader-comment-current-sexp)
-               ("s-\\"   . tw-clj-toggle-reader-comment-fst-sexp-on-line)
-               ("s-X"   . tw-switch-to-repl-start-figwheel)
-               ("s-e"   . cider-eval-last-sexp)
-               ("s-j"   . cider-format-defun)
-               ("s-i"   . cljr-rename-symbol))
-    (bind-chords :map map ; clojure-mode-map cider-repl-mode-map
-                 ("pr" . (lambda () (interactive)
-                           (tw-insert-str "(println \"\")" 2)))
-                 ("rm" . (lambda () (interactive)
-                           (tw-insert-str "(remove (fn []))" 3)))
-                 ("fi" . tw-clj-insert-filter-fn)
-                 ("de" . tw-clj-insert-defn)
-                 ;; ("db" . my=clj-insert-debugf)
-                 ;; ("dg" . my=clj-insert-debugf)
-                 ("df" . tw-clj-insert-fn)
-                 ("ds" . tw-clj-insert-doseq)
-                 ("fn" . tw-clj-insert-fn)
-                 ("do" . tw-clj-insert-do)
-                 ("co" . tw-clj-insert-comp)
-                 ("cd" . tw-insert-clojuredocs)
-                 ("pa" . tw-insert-partial)
-                 ("le" . tw-clj-insert-let)
-                 ("fo" . tw-clj-insert-for)
-                 ("ty" . tw-clj-insert-type)
-                 ("ma" . tw-clj-insert-map-fn)))
+(defun my=clj-bind-keys-and-chords (map)
+  (bind-keys :map map
+             ;; on German keyboard the #-key is next to the Enter-key
+             ("C-s-\\" . tw-clj-toggle-reader-comment-current-sexp)
+             ("s-\\"   . tw-clj-toggle-reader-comment-fst-sexp-on-line)
+             ("s-X"   . tw-switch-to-repl-start-figwheel)
+             ("s-e"   . cider-eval-last-sexp)
+             ("s-j"   . cider-format-defun)
+             ("s-i"   . cljr-rename-symbol))
+  (bind-chords :map map ; clojure-mode-map cider-repl-mode-map
+               ("pr" . (lambda () (interactive)
+                         (tw-insert-str "(println \"\")" 2)))
+               ("rm" . (lambda () (interactive)
+                         (tw-insert-str "(remove (fn []))" 3)))
+               ("fi" . tw-clj-insert-filter-fn)
+               ("de" . tw-clj-insert-defn)
+               ;; ("db" . my=clj-insert-debugf)
+               ;; ("dg" . my=clj-insert-debugf)
+               ("df" . tw-clj-insert-fn)
+               ("ds" . tw-clj-insert-doseq)
+               ("fn" . tw-clj-insert-fn)
+               ("do" . tw-clj-insert-do)
+               ("co" . tw-clj-insert-comp)
+               ("cd" . tw-insert-clojuredocs)
+               ("pa" . tw-insert-partial)
+               ("le" . tw-clj-insert-let)
+               ("fo" . tw-clj-insert-for)
+               ("ty" . tw-clj-insert-type)
+               ("ma" . tw-clj-insert-map-fn)))
 
-  (with-eval-after-load 'cider-repl-mode
-    (my=clj-bind-keys-and-chords cider-repl-mode-map)
-    (bind-keys :map cider-repl-mode-map
-               ("<menu>" . tw-stop-synths-metronoms)
-               ("s-h"    . helm-cider-history)
-               ("s-j"    . cider-format-defun)
-               ("s-x"    . cider-switch-to-last-clojure-buffer)
-               ("M-s-l"  . tw-cider-reload-ns-from-file)
-               ("s-u"    . tw-cider-reload-ns-from-file)
-               ;; invoke from clojure buffer
-               ("<C-s-delete>" . cider-repl-clear-buffer)))
+(with-eval-after-load 'cider-repl-mode
+  (my=clj-bind-keys-and-chords cider-repl-mode-map)
+  (bind-keys :map cider-repl-mode-map
+             ("<menu>" . tw-stop-synths-metronoms)
+             ("s-h"    . helm-cider-history)
+             ("s-j"    . cider-format-defun)
+             ("s-x"    . cider-switch-to-last-clojure-buffer)
+             ("M-s-l"  . tw-cider-reload-ns-from-file)
+             ("s-u"    . tw-cider-reload-ns-from-file)
+             ;; invoke from clojure buffer
+             ("<C-s-delete>" . cider-repl-clear-buffer)))
 
-  (with-eval-after-load 'clojure-mode
-    (my=clj-bind-keys-and-chords clojure-mode-map)
-    (bind-keys :map clojure-mode-map
-               ("s-d"    . cider-eval-defun-at-point)
-               ("s-x"    . tw-cider-switch-to-repl-buffer)
-               ("C-s-c"  . cider-connect-clj)
-               ("C-s-j"  . cider-jack-in)
-               ;; ("s-r" . cider-eval-last-expression-in-repl)
-               ("M-s-l"  . tw-cider-save-and-load-current-buffer)
-               ("s-u"    . tw-cider-save-and-load-current-buffer)
-               ("M-s-n"  . cider-repl-set-ns)
-               ("s-t"    . cider-test-run-tests)
+(with-eval-after-load 'clojure-mode
+  (my=clj-bind-keys-and-chords clojure-mode-map)
+  (bind-keys :map clojure-mode-map
+             ("s-d"    . cider-eval-defun-at-point)
+             ("s-x"    . tw-cider-switch-to-repl-buffer)
+             ("C-s-c"  . cider-connect-clj)
+             ("C-s-j"  . cider-jack-in)
+             ;; ("s-r" . cider-eval-last-expression-in-repl)
+             ("M-s-l"  . tw-cider-save-and-load-current-buffer)
+             ("s-u"    . tw-cider-save-and-load-current-buffer)
+             ("M-s-n"  . cider-repl-set-ns)
+             ("s-t"    . cider-test-run-tests)
 
-               ;; TODO see global-map keybindings
-               ;; ("s-."  . cider-find-var)
-               ;; ("s-,"  . cider-pop-back)
-               ;; TODO s-M does not work in REPL buffer
+             ;; TODO see global-map keybindings
+             ;; ("s-."  . cider-find-var)
+             ;; ("s-,"  . cider-pop-back)
+             ;; TODO s-M does not work in REPL buffer
 
-               ;; Reload modified and unloaded namespaces on the classpath
-               ("s-o"     . cider-ns-refresh)
+             ;; Reload modified and unloaded namespaces on the classpath
+             ("s-o"     . cider-ns-refresh)
 
-               ;; Send a (require ’ns :reload) to the REPL
-               ;; ("s-o"  . cider-ns-reload)
+             ;; Send a (require ’ns :reload) to the REPL
+             ;; ("s-o"  . cider-ns-reload)
 
-               ("C-s-o"   . tw-cider-clear-compilation-highlights)))
+             ("C-s-o"   . tw-cider-clear-compilation-highlights)))
 
-  (defun endless/sharp ()
-    "Insert the function form abbreviation #' unless in a string
+(defun endless/sharp ()
+  "Insert the function form abbreviation #' unless in a string
 or comment.
 
 The reader synstax #' is a function form abbreviation, it enables
@@ -798,308 +798,308 @@ byte-compilation, however:
 2. It doesn't work for `bind-keys' and `bind-chords'
 See
 https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
-    (interactive)
-    (call-interactively #'self-insert-command)
-    (let ((ppss (syntax-ppss)))
-      (unless (or (elt ppss 3)
-                  (elt ppss 4)
-                  (eq (char-after) ?'))
-        (insert "'"))))
+  (interactive)
+  (call-interactively #'self-insert-command)
+  (let ((ppss (syntax-ppss)))
+    (unless (or (elt ppss 3)
+                (elt ppss 4)
+                (eq (char-after) ?'))
+      (insert "'"))))
 
-  (bind-chords :map emacs-lisp-mode-map
-               ("df" . tw-elisp-insert-defun)
-               ("la" . tw-elisp-insert-lambda)
-               ("le" . tw-elisp-insert-let)
-               ("me" . tw-elisp-insert-message)
-               ("pr" . tw-elisp-insert-message))
+(bind-chords :map emacs-lisp-mode-map
+             ("df" . tw-elisp-insert-defun)
+             ("la" . tw-elisp-insert-lambda)
+             ("le" . tw-elisp-insert-let)
+             ("me" . tw-elisp-insert-message)
+             ("pr" . tw-elisp-insert-message))
 
-  (bind-keys :map emacs-lisp-mode-map
-             ("C-s-l" . tw-elisp-insert-let)
-             ("C-s-m" . tw-elisp-insert-message)
-             ("C-s-p" . tw-elisp-insert-message)
-             ;; Evaluates the defun above the point. (Is a bit buggy)
-             ("C-s-d" . tw-elisp-insert-defun)
-             ("s-d"   . eval-defun) ;; tw-eval-current-defun
-             ;; The point must be inside the right sexp
-             ("M-s-d" . eval-sexp-fu-eval-sexp-inner-list)
-             ("#"     . endless/sharp)
-             ("s-\\"  . tw-elisp-toggle-reader-comment-current-sexp))
+(bind-keys :map emacs-lisp-mode-map
+           ("C-s-l" . tw-elisp-insert-let)
+           ("C-s-m" . tw-elisp-insert-message)
+           ("C-s-p" . tw-elisp-insert-message)
+           ;; Evaluates the defun above the point. (Is a bit buggy)
+           ("C-s-d" . tw-elisp-insert-defun)
+           ("s-d"   . eval-defun) ;; tw-eval-current-defun
+           ;; The point must be inside the right sexp
+           ("M-s-d" . eval-sexp-fu-eval-sexp-inner-list)
+           ("#"     . endless/sharp)
+           ("s-\\"  . tw-elisp-toggle-reader-comment-current-sexp))
 
 ;;;;  (bind-keys :map org-mode-map
 ;;;;             ;; ~<menu>~ pressed twice
 ;;;;             ("H-<menu>" . org-latex-export-to-pdf))
 
-  ;; (with-eval-after-load 'org-mode
-  ;;   (bind-keys :map org-mode-map
-  ;;              ;; ~<menu>~ pressed twice
-  ;;              ("H-<menu>" . org-latex-export-to-pdf)))
+;; (with-eval-after-load 'org-mode
+;;   (bind-keys :map org-mode-map
+;;              ;; ~<menu>~ pressed twice
+;;              ("H-<menu>" . org-latex-export-to-pdf)))
 
-  (bind-keys :map prog-mode-map
-             ;; M-/  M-x hippie-expand
-             ("s-Q" . dumb-jump-quick-look)
-             ("s-h" . spacemacs/helm-jump-in-buffer)
-             ;; previously: helm-imenu-in-all-buffers
-             ("s-H" . lazy-helm/helm-imenu-in-all-buffers)
-             ("s-u" . eval-buffer)
-             ("s-e" . eval-last-sexp))
+(bind-keys :map prog-mode-map
+           ;; M-/  M-x hippie-expand
+           ("s-Q" . dumb-jump-quick-look)
+           ("s-h" . spacemacs/helm-jump-in-buffer)
+           ;; previously: helm-imenu-in-all-buffers
+           ("s-H" . lazy-helm/helm-imenu-in-all-buffers)
+           ("s-u" . eval-buffer)
+           ("s-e" . eval-last-sexp))
 
-  (add-hook 'LaTeX-mode-hook
-            (lambda ()
-              (bind-keys :map LaTeX-mode-map
-                         ("H-<menu>" . latex/build)))) ;; ~<menu>~ pressed twice
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (bind-keys :map LaTeX-mode-map
+                       ("H-<menu>" . latex/build)))) ;; ~<menu>~ pressed twice
 
-  ;; Setup for Hacking on Guix and Scheme Code
-  ;; https://guix.gnu.org/en/manual/devel/en/guix.html#The-Perfect-Setup
-  ;;
-  ;; `parse-colon-path' returns a list with items containing trailing slash '/',
-  ;; geiser-guile-load-path doesn't like it.
-  (when-let ((glp-env (getenv "glp")))
-    (let ((glp (split-string glp-env ":"))
-          (dgx (getenv "dgx")))
-      ;; https://emacs-guix.gitlab.io/website/manual/latest/html_node/Development.html
-      (add-hook 'scheme-mode-hook #'guix-devel-mode)
+;; Setup for Hacking on Guix and Scheme Code
+;; https://guix.gnu.org/en/manual/devel/en/guix.html#The-Perfect-Setup
+;;
+;; `parse-colon-path' returns a list with items containing trailing slash '/',
+;; geiser-guile-load-path doesn't like it.
+(when-let ((glp-env (getenv "glp")))
+  (let ((glp (split-string glp-env ":"))
+        (dgx (getenv "dgx")))
+    ;; https://emacs-guix.gitlab.io/website/manual/latest/html_node/Development.html
+    (add-hook 'scheme-mode-hook #'guix-devel-mode)
 
-      ;; Put scheme code like e.g utils.scm on the geiser-guile-load-path
-      ;; TODO move this to project's .dir-locals.el
-      (with-eval-after-load #'geiser-guile
-        (mapcar
-         ;; Add ELEMENT to the value of LIST-VAR if it isn't there yet.
-         (-partial #'add-to-list 'geiser-guile-load-path)
-         glp))
-      (with-eval-after-load 'yasnippet
-        (add-to-list #'yas-snippet-dirs (concat dgx "/etc/snippets/yas")))
+    ;; Put scheme code like e.g utils.scm on the geiser-guile-load-path
+    ;; TODO move this to project's .dir-locals.el
+    (with-eval-after-load #'geiser-guile
+      (mapcar
+       ;; Add ELEMENT to the value of LIST-VAR if it isn't there yet.
+       (-partial #'add-to-list 'geiser-guile-load-path)
+       glp))
+    (with-eval-after-load 'yasnippet
+      (add-to-list #'yas-snippet-dirs (concat dgx "/etc/snippets/yas")))
 
-      ;; TODO extend the GuixOS with a service providing user full-name and email
-      ;; or parse (one of):
-      ;;   /run/current-system/configuration.scm
-      ;;   `guix system describe | rg "configuration file" | rg -o "/gnu/.*"`
+    ;; TODO extend the GuixOS with a service providing user full-name and email
+    ;; or parse (one of):
+    ;;   /run/current-system/configuration.scm
+    ;;   `guix system describe | rg "configuration file" | rg -o "/gnu/.*"`
 
-      (setq
-       ;; Location for geiser-history.guile and geiser-history.racket. (Default
-       ;; "~/.geiser_history")
-       ;; geiser-repl-history-filename "..."
-       user-full-name         (getenv "user_full_name")
-       user-mail-address      (getenv "user_mail_address")
-       copyright-names-regexp (format "%s <%s>" user-full-name user-mail-address))
+    (setq
+     ;; Location for geiser-history.guile and geiser-history.racket. (Default
+     ;; "~/.geiser_history")
+     ;; geiser-repl-history-filename "..."
+     user-full-name         (getenv "user_full_name")
+     user-mail-address      (getenv "user_mail_address")
+     copyright-names-regexp (format "%s <%s>" user-full-name user-mail-address))
 
-      (load-file (concat dgx "/etc/copyright.el"))
-      ;; check if the copyright is up to date M-x copyright-update.
-      ;; automatically add copyright after each buffer save
-      ;; (add-hook 'after-save-hook 'copyright-update)
-      ))
+    (load-file (concat dgx "/etc/copyright.el"))
+    ;; check if the copyright is up to date M-x copyright-update.
+    ;; automatically add copyright after each buffer save
+    ;; (add-hook 'after-save-hook 'copyright-update)
+    ))
 
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (bind-keys :map python-mode-map
-                         ("s-x" . spacemacs/python-start-or-switch-repl))))
-  (add-hook 'debugger-mode-hook
-            (lambda ()
-              (bind-keys :map debugger-mode-map
-                         ("C-g" . debugger-quit))))
+(add-hook 'python-mode-hook
+          (lambda ()
+            (bind-keys :map python-mode-map
+                       ("s-x" . spacemacs/python-start-or-switch-repl))))
+(add-hook 'debugger-mode-hook
+          (lambda ()
+            (bind-keys :map debugger-mode-map
+                       ("C-g" . debugger-quit))))
 
-  (defun my=fn-kbind-scheme (map)
-    (lambda ()
-      (bind-keys :map map
-                 ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
-                 ("C-s-m"  . tw-scheme-insert-log)
-                 ("C-s-p"  . tw-scheme-insert-log)
-                 ("s-."    . geiser-edit-symbol-at-point)
-                 ;; ("s-;"    . tw-racket-toggle-reader-comment-current-sexp)
-                 ("s-\\"   . tw-racket-toggle-reader-comment-fst-sexp-on-line)
-                 ("s-d"    . geiser-eval-definition)
-                 ("s-e"    . geiser-eval-last-sexp)
-                 ("s-x"    . geiser-mode-switch-to-repl))
-      (bind-chords :map map
-                   ("le" . tw-scheme-insert-let*)
-                   ("pr" . tw-scheme-insert-log))))
+(defun my=fn-kbind-scheme (map)
+  (lambda ()
+    (bind-keys :map map
+               ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
+               ("C-s-m"  . tw-scheme-insert-log)
+               ("C-s-p"  . tw-scheme-insert-log)
+               ("s-."    . geiser-edit-symbol-at-point)
+               ;; ("s-;"    . tw-racket-toggle-reader-comment-current-sexp)
+               ("s-\\"   . tw-racket-toggle-reader-comment-fst-sexp-on-line)
+               ("s-d"    . geiser-eval-definition)
+               ("s-e"    . geiser-eval-last-sexp)
+               ("s-x"    . geiser-mode-switch-to-repl))
+    (bind-chords :map map
+                 ("le" . tw-scheme-insert-let*)
+                 ("pr" . tw-scheme-insert-log))))
 
-  (defun my=fn-kbind-racket (map)
-    (lambda ()
-      (bind-keys :map map
-                 ("<C-s-delete>" . my=racket-repl-clear)
-                 ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
-                 ("C-s-p"  . tw-racket-insert-log)
-                 ("M-s-d"  . tw-racket-insert-fn)
-                 ("M-s-p"  . tw-insert-partial)
-                 ("s-\\"   . tw-racket-toggle-reader-comment-fst-sexp-on-line)
-                 ("s-e"    . racket-eval-last-sexp)
-                 ("s-o"    . racket-run-and-switch-to-repl)
-                 ("s-x"    . racket-repl))
-      (bind-chords :map map
-                   ("pr" . tw-racket-insert-log))))
+(defun my=fn-kbind-racket (map)
+  (lambda ()
+    (bind-keys :map map
+               ("<C-s-delete>" . my=racket-repl-clear)
+               ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
+               ("C-s-p"  . tw-racket-insert-log)
+               ("M-s-d"  . tw-racket-insert-fn)
+               ("M-s-p"  . tw-insert-partial)
+               ("s-\\"   . tw-racket-toggle-reader-comment-fst-sexp-on-line)
+               ("s-e"    . racket-eval-last-sexp)
+               ("s-o"    . racket-run-and-switch-to-repl)
+               ("s-x"    . racket-repl))
+    (bind-chords :map map
+                 ("pr" . tw-racket-insert-log))))
 
-  ;; (defun set-frame-theme (theme)
-  ;;   "Set the THEME for the current frame only. TODO doesn't work"
-  ;;   (interactive
-  ;;    (list
-  ;;     (intern (completing-read "Theme: " (mapcar 'symbol-name (custom-available-themes))))))
-  ;;   ;; Disable all current themes to avoid mixing theme elements
-  ;;   (mapc #'disable-theme custom-enabled-themes)
-  ;;   (load-theme theme t t) ;; Load the chosen theme without enabling it
-  ;;   ;; Re-enable the previously active themes for other frames
-  ;;   (dolist (other-theme custom-enabled-themes)
-  ;;     (unless (eq other-theme theme)
-  ;;       (enable-theme other-theme)))
-  ;;   ;; Apply the theme only to the current frame - doesn't work!!!
-  ;;   (with-selected-frame (selected-frame)
-  ;;     (enable-theme theme)))
-  ;; (set-frame-theme 'zenburn)
+;; (defun set-frame-theme (theme)
+;;   "Set the THEME for the current frame only. TODO doesn't work"
+;;   (interactive
+;;    (list
+;;     (intern (completing-read "Theme: " (mapcar 'symbol-name (custom-available-themes))))))
+;;   ;; Disable all current themes to avoid mixing theme elements
+;;   (mapc #'disable-theme custom-enabled-themes)
+;;   (load-theme theme t t) ;; Load the chosen theme without enabling it
+;;   ;; Re-enable the previously active themes for other frames
+;;   (dolist (other-theme custom-enabled-themes)
+;;     (unless (eq other-theme theme)
+;;       (enable-theme other-theme)))
+;;   ;; Apply the theme only to the current frame - doesn't work!!!
+;;   (with-selected-frame (selected-frame)
+;;     (enable-theme theme)))
+;; (set-frame-theme 'zenburn)
 
-  ;; (set-background-color "gray0")   ;; black
-  ;; (set-background-color "gray100") ;; white
+;; (set-background-color "gray0")   ;; black
+;; (set-background-color "gray100") ;; white
 
-  ;; (defun my-haskell-faces ()
-  ;;   "Buffer-local face remapping for `haskell-mode-hook'."
-  ;;   (face-remap-add-relative 'default
-  ;;                            :background "darkgreen"
-  ;;                            :foreground "lightblue"))
+;; (defun my-haskell-faces ()
+;;   "Buffer-local face remapping for `haskell-mode-hook'."
+;;   (face-remap-add-relative 'default
+;;                            :background "darkgreen"
+;;                            :foreground "lightblue"))
 
-  ;; (add-hook 'haskell-mode-hook #'my-haskell-faces)
+;; (add-hook 'haskell-mode-hook #'my-haskell-faces)
 
-  ;; For rkt-files the bindings are available via major mode bindings.
-  ;; See M-x helm-descbinds
-  (with-eval-after-load 'racket-mode
-    (mapcar (-partial #'apply #'add-hook)
-            `((racket-mode-hook      ,(my=fn-kbind-racket racket-mode-map))
-              (racket-repl-mode-hook ,(my=fn-kbind-racket racket-repl-mode-map)))))
+;; For rkt-files the bindings are available via major mode bindings.
+;; See M-x helm-descbinds
+(with-eval-after-load 'racket-mode
+  (mapcar (-partial #'apply #'add-hook)
+          `((racket-mode-hook      ,(my=fn-kbind-racket racket-mode-map))
+            (racket-repl-mode-hook ,(my=fn-kbind-racket racket-repl-mode-map)))))
 
-  ;; For scm-files the bindings are available via minor mode bindings for
-  ;; geiser-mode, not for scheme-mode. See M-x helm-descbinds
-  (with-eval-after-load 'geiser-mode
-    (mapcar (-partial #'apply #'add-hook)
-            `((geiser-mode-hook      ,(my=fn-kbind-scheme geiser-mode-map))
-              (geiser-repl-mode-hook ,(my=fn-kbind-scheme geiser-repl-mode-map)))))
+;; For scm-files the bindings are available via minor mode bindings for
+;; geiser-mode, not for scheme-mode. See M-x helm-descbinds
+(with-eval-after-load 'geiser-mode
+  (mapcar (-partial #'apply #'add-hook)
+          `((geiser-mode-hook      ,(my=fn-kbind-scheme geiser-mode-map))
+            (geiser-repl-mode-hook ,(my=fn-kbind-scheme geiser-repl-mode-map)))))
 
-  (with-eval-after-load 'scheme-mode
-    (font-lock-add-keywords
-     'scheme-mode (mapcar (lambda (keyword)
-                            `(,(concat "(" (regexp-quote keyword) "\\>")
-                              . 'font-lock-keyword-face))
-                          '("if-let")))
-    ;; indentation for 'if-let' should be same as for e.g. 'let'.
-    (put 'if-let 'scheme-indent-function 1))
+(with-eval-after-load 'scheme-mode
+  (font-lock-add-keywords
+   'scheme-mode (mapcar (lambda (keyword)
+                          `(,(concat "(" (regexp-quote keyword) "\\>")
+                            . 'font-lock-keyword-face))
+                        '("if-let")))
+  ;; indentation for 'if-let' should be same as for e.g. 'let'.
+  (put 'if-let 'scheme-indent-function 1))
 
-  ;; advice, defadvice and letf shouldn't be used:
-  ;; https://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00146.html
-  ;; Emacs 24.4 replaces this mechanism with advice-add
+;; advice, defadvice and letf shouldn't be used:
+;; https://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00146.html
+;; Emacs 24.4 replaces this mechanism with advice-add
 
-  ;; Difference between `evil-search-forward` and `evil-ex-search-forward`:
-  ;; evil-search-forward    - wrap emacs isearch-forward
-  ;; evil-ex-search-forward - invoke the evil internal search
-  ;; https://emacs.stackexchange.com/a/24913
+;; Difference between `evil-search-forward` and `evil-ex-search-forward`:
+;; evil-search-forward    - wrap emacs isearch-forward
+;; evil-ex-search-forward - invoke the evil internal search
+;; https://emacs.stackexchange.com/a/24913
 
-  ;; See
-  ;; https://www.reddit.com/r/emacs/comments/6ewd0h/how_can_i_center_the_search_results_vertically/?utm_source=share&utm_medium=web2x
+;; See
+;; https://www.reddit.com/r/emacs/comments/6ewd0h/how_can_i_center_the_search_results_vertically/?utm_source=share&utm_medium=web2x
 
-  ;; (bind-keys :map scheme-mode-map
-  ;;            ("<f11>" . (lambda () (interactive) (forward-sexp 1))))
-  ;; (bind-keys :map scheme-mode-map
-  ;;            ("<f12>" . (lambda () (interactive) (sp-forward-sexp 1))))
-  ;; (unbind-key "<f11>" scheme-mode-map)
-  ;; (unbind-key "<f12>" scheme-mode-map)
+;; (bind-keys :map scheme-mode-map
+;;            ("<f11>" . (lambda () (interactive) (forward-sexp 1))))
+;; (bind-keys :map scheme-mode-map
+;;            ("<f12>" . (lambda () (interactive) (sp-forward-sexp 1))))
+;; (unbind-key "<f11>" scheme-mode-map)
+;; (unbind-key "<f12>" scheme-mode-map)
 
-  (advice-add #'tw-search-region-or-symbol
-              :after
-              (defun my=note--my=search-region-or-symbol (&optional _)
-                (let ((p "[advice tw-search-region-or-symbol] "))
-                  (message
-                   (concat
-                    p "Try:\n"
-                    p "1. ~<f3>~ then ~<f4>~ then ~v~ (evil-visual-mode)"
-                    " mark something and press ~SPC s e~\n"
-                    p "2. ~M-<f3>~ for M-x spacemacs/hsearch-project")))))
-
-  (advice-add #'split-window-right-and-focus
-              :after (defun my=recenter-top-bottom ()
-                       ;; needed cause the (recenter-top-bottom) has
-                       ;; (interactive "P")
-                       (recenter-top-bottom)))
-  (advice-add #'whitespace-cleanup
-              :after (defun my=whitespace-cleanup ()
-                       (message "[advice whitespace-cleanup] done")))
-  (advice-add #'evil-avy-goto-char-timer
-              :after (defun my=note--evil-avy-goto-char-timer (_)
-                       (message
-                        "[advice evil-avy-goto-char-timer] %s"
-                        "Also ~SPC j j~, ~<f2>~")))
-  (advice-add #'evil-avy-goto-line
-              :after
-              (defun my=note--evil-avy-goto-line (&optional _)
+(advice-add #'tw-search-region-or-symbol
+            :after
+            (defun my=note--my=search-region-or-symbol (&optional _)
+              (let ((p "[advice tw-search-region-or-symbol] "))
                 (message
-                 "[advice evil-avy-goto-line] %s"
-                 "Also ~SPC j l~, ~M-m j l~, ~<C-f2>~, ~C-s-/~")))
+                 (concat
+                  p "Try:\n"
+                  p "1. ~<f3>~ then ~<f4>~ then ~v~ (evil-visual-mode)"
+                  " mark something and press ~SPC s e~\n"
+                  p "2. ~M-<f3>~ for M-x spacemacs/hsearch-project")))))
 
-  ;; (advice-add #'evil-ex-search-next
-  ;;             :after #'evil-scroll-line-to-center)
-  ;; (advice-add #'evil-ex-search-previous
-  ;;             :after #'evil-scroll-line-to-center)
+(advice-add #'split-window-right-and-focus
+            :after (defun my=recenter-top-bottom ()
+                     ;; needed cause the (recenter-top-bottom) has
+                     ;; (interactive "P")
+                     (recenter-top-bottom)))
+(advice-add #'whitespace-cleanup
+            :after (defun my=whitespace-cleanup ()
+                     (message "[advice whitespace-cleanup] done")))
+(advice-add #'evil-avy-goto-char-timer
+            :after (defun my=note--evil-avy-goto-char-timer (_)
+                     (message
+                      "[advice evil-avy-goto-char-timer] %s"
+                      "Also ~SPC j j~, ~<f2>~")))
+(advice-add #'evil-avy-goto-line
+            :after
+            (defun my=note--evil-avy-goto-line (&optional _)
+              (message
+               "[advice evil-avy-goto-line] %s"
+               "Also ~SPC j l~, ~M-m j l~, ~<C-f2>~, ~C-s-/~")))
 
-  ;; === BEG adjust-point-pos-after-search
-  (advice-add
-   #'evil-ex-search-next
-   :before
-   #'tw-adjust-point-pos-before-search
-   ;; (lambda (&optional COUNT)
-   ;;   (interactive)
-   ;;   (evil-scroll-line-to-center)
-   ;;   ;; (setq my=line-before (line-number-at-pos))
-   ;;   )
-   ;; ;; convenient name for identifying or removing this advice later
-   ;; '((name . "before-search"))
-   )
-  (advice-add #'evil-ex-search-next :after #'tw-adjust-point-pos-after-search)
-  (advice-add #'evil-ex-search-previous :before #'tw-adjust-point-pos-before-search)
-  (advice-add #'evil-ex-search-previous :after #'tw-adjust-point-pos-after-search)
-  (advice-add #'evil-goto-line :before #'evil-scroll-line-to-center)
-  (advice-add #'evil-goto-line :after #'evil-scroll-line-to-center)
+;; (advice-add #'evil-ex-search-next
+;;             :after #'evil-scroll-line-to-center)
+;; (advice-add #'evil-ex-search-previous
+;;             :after #'evil-scroll-line-to-center)
 
-  ;; Both ~*~ / ~<kp-multiply>~ and ~s-*~ / ~<s-kp-multiply>~ should behave the
-  ;; same and open that transient menu.
-  (global-set-key (kbd "s-*") #'spacemacs/enter-ahs-backward)
-  (global-set-key (kbd "<s-kp-multiply>") #'spacemacs/enter-ahs-backward)
+;; === BEG adjust-point-pos-after-search
+(advice-add
+ #'evil-ex-search-next
+ :before
+ #'tw-adjust-point-pos-before-search
+ ;; (lambda (&optional COUNT)
+ ;;   (interactive)
+ ;;   (evil-scroll-line-to-center)
+ ;;   ;; (setq my=line-before (line-number-at-pos))
+ ;;   )
+ ;; ;; convenient name for identifying or removing this advice later
+ ;; '((name . "before-search"))
+ )
+(advice-add #'evil-ex-search-next :after #'tw-adjust-point-pos-after-search)
+(advice-add #'evil-ex-search-previous :before #'tw-adjust-point-pos-before-search)
+(advice-add #'evil-ex-search-previous :after #'tw-adjust-point-pos-after-search)
+(advice-add #'evil-goto-line :before #'evil-scroll-line-to-center)
+(advice-add #'evil-goto-line :after #'evil-scroll-line-to-center)
 
-  ;; (advice-remove #'evil-ex-search-next "before-search")
-  ;; (advice-remove #'evil-ex-search-next #'tw-adjust-point-pos-before-search)
-  ;; (advice-remove #'evil-ex-search-next #'tw-adjust-point-pos-after-search)
-  ;; (advice-remove #'evil-ex-search-next #'evil-scroll-line-to-center)
-  ;; (advice-remove #'evil-ex-search-previous #'tw-adjust-point-pos-before-search)
-  ;; (advice-remove #'evil-ex-search-previous #'tw-adjust-point-pos-after-search)
-  ;; (advice-remove #'evil-goto-line #'evil-scroll-line-to-center)
-  ;; (advice-remove #'evil-goto-line #'evil-scroll-line-to-center)
+;; Both ~*~ / ~<kp-multiply>~ and ~s-*~ / ~<s-kp-multiply>~ should behave the
+;; same and open that transient menu.
+(global-set-key (kbd "s-*") #'spacemacs/enter-ahs-backward)
+(global-set-key (kbd "<s-kp-multiply>") #'spacemacs/enter-ahs-backward)
 
-  ;; === END adjust-point-pos-after-search
+;; (advice-remove #'evil-ex-search-next "before-search")
+;; (advice-remove #'evil-ex-search-next #'tw-adjust-point-pos-before-search)
+;; (advice-remove #'evil-ex-search-next #'tw-adjust-point-pos-after-search)
+;; (advice-remove #'evil-ex-search-next #'evil-scroll-line-to-center)
+;; (advice-remove #'evil-ex-search-previous #'tw-adjust-point-pos-before-search)
+;; (advice-remove #'evil-ex-search-previous #'tw-adjust-point-pos-after-search)
+;; (advice-remove #'evil-goto-line #'evil-scroll-line-to-center)
+;; (advice-remove #'evil-goto-line #'evil-scroll-line-to-center)
 
-  (advice-add #'ediff-quit
-              :around #'tw-disable-y-or-n-p)
-  (advice-add #'helm-mini
-              :before #'tw-helm-mini)
-  (advice-add #'helm-mini
-              :after
-              (defun my=note--evil-avy-goto-char-timer ()
-                (message
-                 "[advice helm-mini] %s"
-                 "Toggle mark / unmark all buffers: ~M-m~")))
-  (advice-add #'spacemacs/helm-persp-switch-project
-              :after
-              (defun my=note--spacemacs/helm-persp-switch-project (_)
-                (message
-                 "[advice spacemacs/helm-persp-switch-project] %s"
-                 "Try: ~SPC p p~ for M-x helm-projectile-switch-project")))
+;; === END adjust-point-pos-after-search
 
-  (advice-add #'spacemacs/toggle-menu-bar
-              :after
-              (defun my=note--spacemacs/toggle-menu-bar ()
-                (message
-                 "[advice spacemacs/toggle-menu-bar] %s"
-                 "Try also: ~M-`~ for M-x tmm-menubar")))
+(advice-add #'ediff-quit
+            :around #'tw-disable-y-or-n-p)
+(advice-add #'helm-mini
+            :before #'tw-helm-mini)
+(advice-add #'helm-mini
+            :after
+            (defun my=note--evil-avy-goto-char-timer ()
+              (message
+               "[advice helm-mini] %s"
+               "Toggle mark / unmark all buffers: ~M-m~")))
+(advice-add #'spacemacs/helm-persp-switch-project
+            :after
+            (defun my=note--spacemacs/helm-persp-switch-project (_)
+              (message
+               "[advice spacemacs/helm-persp-switch-project] %s"
+               "Try: ~SPC p p~ for M-x helm-projectile-switch-project")))
 
-  (mapcar
-   (lambda (map)
-     (bind-keys :map map
+(advice-add #'spacemacs/toggle-menu-bar
+            :after
+            (defun my=note--spacemacs/toggle-menu-bar ()
+              (message
+               "[advice spacemacs/toggle-menu-bar] %s"
+               "Try also: ~M-`~ for M-x tmm-menubar")))
+
+(mapcar
+ (lambda (map)
+   (bind-keys :map map
 ;;; TODO workaround for (global-set-key (kbd "C-M-k") 'kill-sexp) overridden by
 ;;; layers/+misc/multiple-cursors/packages.el
-                ("C-M-k" . kill-sexp)))
-   '(evil-normal-state-map evil-insert-state-map))
+              ("C-M-k" . kill-sexp)))
+ '(evil-normal-state-map evil-insert-state-map))
 
 ;;   (with-eval-after-load 'evil-normal-state
 ;;     (bind-keys :map evil-normal-state-map
@@ -1113,52 +1113,52 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;; ;;; layers/+misc/multiple-cursors/packages.el
 ;;                   ("C-M-k" . kill-sexp)))
 
-  (mapcar
-   (lambda (map)
-     ;; Move by screen lines instead of logical (long) lines
-     (bind-keys :map map
-                ("j" . evil-next-visual-line)
-                ("k" . evil-previous-visual-line)))
-   '(evil-motion-state-map evil-visual-state-map))
+(mapcar
+ (lambda (map)
+   ;; Move by screen lines instead of logical (long) lines
+   (bind-keys :map map
+              ("j" . evil-next-visual-line)
+              ("k" . evil-previous-visual-line)))
+ '(evil-motion-state-map evil-visual-state-map))
 
-  (bind-keys :map evil-visual-state-map
-             ("p" . tw-evil-paste-after-from-0))
+(bind-keys :map evil-visual-state-map
+           ("p" . tw-evil-paste-after-from-0))
 
-  ;; (with-eval-after-load 'evil-motion-state
-  ;;    ;; Move by screen lines instead of logical (long) lines
-  ;;    (bind-keys :map evil-motion-state-map
-  ;;               ("j" . evil-next-visual-line)
-  ;;               ("k" . evil-previous-visual-line)))
+;; (with-eval-after-load 'evil-motion-state
+;;    ;; Move by screen lines instead of logical (long) lines
+;;    (bind-keys :map evil-motion-state-map
+;;               ("j" . evil-next-visual-line)
+;;               ("k" . evil-previous-visual-line)))
 
-  ;; (with-eval-after-load 'evil-visual-state
-  ;;   ;; Move by screen lines instead of logical (long) lines
-  ;;   (bind-keys :map evil-visual-state-map
-  ;;                   ("j" . evil-next-visual-line)
-  ;;                   ("k" . evil-previous-visual-line))
-  ;;   (bind-keys :map evil-visual-state-map
-  ;;              ("p" . tw-evil-paste-after-from-0)))
+;; (with-eval-after-load 'evil-visual-state
+;;   ;; Move by screen lines instead of logical (long) lines
+;;   (bind-keys :map evil-visual-state-map
+;;                   ("j" . evil-next-visual-line)
+;;                   ("k" . evil-previous-visual-line))
+;;   (bind-keys :map evil-visual-state-map
+;;              ("p" . tw-evil-paste-after-from-0)))
 
-  ;; see also binding for <f2>
-  ;; (bind-keys :map evil-normal-state-map
-  ;;            ("f" . evil-avy-goto-char-timer)
-  ;;            ("t" . evil-avy-goto-char-timer))
+;; see also binding for <f2>
+;; (bind-keys :map evil-normal-state-map
+;;            ("f" . evil-avy-goto-char-timer)
+;;            ("t" . evil-avy-goto-char-timer))
 
-  ;; (add-to-list 'spacemacs-indent-sensitive-modes #'clojure-mode)
-  ;; (add-to-list 'spacemacs-indent-sensitive-modes 'clojurescript-mode)
+;; (add-to-list 'spacemacs-indent-sensitive-modes #'clojure-mode)
+;; (add-to-list 'spacemacs-indent-sensitive-modes 'clojurescript-mode)
 
-  ;; accept completion from copilot and fallback to company
+;; accept completion from copilot and fallback to company
 
-  ;;; github copilot config begin
-  ;; (with-eval-after-load 'company
-  ;;   ;; disable inline previews
-  ;;   (delq 'company-preview-if-just-one-frontend company-frontends))
+;;; github copilot config begin
+;; (with-eval-after-load 'company
+;;   ;; disable inline previews
+;;   (delq 'company-preview-if-just-one-frontend company-frontends))
 
-  ;; (with-eval-after-load 'copilot
-  ;;   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-  ;;   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
+;; (with-eval-after-load 'copilot
+;;   (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+;;   (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion))
 
-  ;; (add-hook 'prog-mode-hook 'copilot-mode)
+;; (add-hook 'prog-mode-hook 'copilot-mode)
 
-  ;; (define-key evil-insert-state-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
-  ;; (define-key evil-insert-state-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
-  ;;; github copilot config end
+;; (define-key evil-insert-state-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
+;; (define-key evil-insert-state-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
+;;; github copilot config end
