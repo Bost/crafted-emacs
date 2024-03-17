@@ -264,6 +264,26 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
 (defun my=H-3 () (interactive) (message "H-3"))
 (defun my=H-4 () (interactive) (message "H-4"))
 
+;;; beg: from spacemacs/layers/+spacemacs/spacemacs-defaults/keybindings.el
+(defun split-window-below-and-focus ()
+  "Split the window vertically and focus the new window."
+  (interactive)
+  (split-window-below)
+  (windmove-down)
+  (when (and (boundp 'golden-ratio-mode)
+             (symbol-value golden-ratio-mode))
+    (golden-ratio)))
+
+(defun split-window-right-and-focus ()
+  "Split the window horizontally and focus the new window."
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (when (and (boundp 'golden-ratio-mode)
+             (symbol-value golden-ratio-mode))
+    (golden-ratio)))
+;;; end: from spacemacs/layers/+spacemacs/spacemacs-defaults/keybindings.el
+
 (defun my=eval-bind-keys-and-chords ()
   "To activate changes, do:
     ~s-d~ my=eval-current-defun
