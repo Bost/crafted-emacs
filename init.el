@@ -69,7 +69,10 @@ and its values are removed."
     (nreverse result)))
 
 (defun set-default-font (plists)
-  "Set the font given the passed PLISTS.
+  "spacemacs/set-default-font from
+ /home/bost/.emacs.d.distros/spacemacs/core/core-fonts-support.el
+
+Set the font given the passed PLISTS.
 
 PLISTS has either the form (\"fontname\" :prop1 val1 :prop2 val2 ...)
 or is a list of such. The first font that can be found will be used.
@@ -79,10 +82,12 @@ The return value is nil if no font was found, truthy otherwise."
     (setq plists (list plists)))
   (catch 'break
     (dolist (plist plists)
-      (message "################ %s (font-spec :name (car plist)) %s" context (font-spec :name (car plist)))
-      (message "################ %s (find-font (font-spec :name (car plist))) %s" context (find-font (font-spec :name (car plist))))
+      (message "%s (font-spec :name (car plist)) %s" context
+               (font-spec :name (car plist)))
+      (message "%s (find-font (font-spec :name (car plist))) %s"
+               context (find-font (font-spec :name (car plist))))
       (when (find-font (font-spec :name (car plist)))
-        (message "################ %s find-font" context)
+        (message "%s find-font" context)
         (let* ((font (car plist))
                (props (cdr plist))
                ;; TODO there's a bug in spacemacs/mplist-remove
@@ -95,7 +100,7 @@ The return value is nil if no font was found, truthy otherwise."
           ;; that the font is applied to future frames is to modify
           ;; default-frame-alist, and Customization causes issues, see
           ;; https://github.com/syl20bnr/spacemacs/issues/5353.
-          ;; INHIBIT-CUSTOMIZE is only present in recent emacs versions. 
+          ;; INHIBIT-CUSTOMIZE is only present in recent emacs versions.
           (if (version< emacs-version "28.0.90")
               (set-frame-font fontspec nil t)
             (set-frame-font fontspec nil t t))
@@ -120,21 +125,21 @@ The return value is nil if no font was found, truthy otherwise."
             ;; mode-line circled letters (circled latin capital/small letters)
             (set-fontset-font "fontset-default"
                               '(#x24b6 . #x24e9) fallback-spec nil 'prepend)
-            ;; mode-line additional characters (circled/squared mathematical operators)
+            ;; mode-line additional characters (circled/squared
+            ;; mathematical operators)
             (set-fontset-font "fontset-default"
                               '(#x2295 . #x22a1) fallback-spec nil 'prepend)
             ;; new version lighter (arrow block)
             (set-fontset-font "fontset-default"
                               '(#x2190 . #x21ff) fallback-spec nil 'prepend)))
-        (message "################ %s font set" context)
+        (message "%s font set" context)
         (throw 'break t)))
     (progn
-      (message "################ %s find-font: false" context)
+      (message "%s find-font: false" context)
       nil)))
 
 ;; (window-parameter (selected-window) 'no-delete-other-windows)
 
-(message "%s set-default-font ..." context)
 (setq default-font
       `("Source Code Pro"
         :size
@@ -158,8 +163,6 @@ The return value is nil if no font was found, truthy otherwise."
         :weight normal
         :width normal))
 
-(set-default-font default-font)
-
 (defun set-default-font-prot ()
   (set-face-attribute
    'default nil
@@ -182,9 +185,15 @@ The return value is nil if no font was found, truthy otherwise."
                       context hostname point-size)
              (truncate (* 10 point-size)))
    :weight 'normal))
-;; (set-default-font-prot)
 
-(message "%s set-default-font ... done" context)
+(message "%s set-default-font ..." context)
+(if (set-default-font default-font)
+    (message "%s set-default-font ... done" context)
+    (progn
+      (message "%s set-default-font ... failed" context)
+      (message "%s set-default-font-prot ... done" context)
+      (set-default-font-prot)
+      (message "%s set-default-font ... done" context)))
 
 ;; pulse modified regions
 ;; https://github.com/minad/goggles
