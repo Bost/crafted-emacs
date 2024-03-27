@@ -23,7 +23,7 @@
 
 ;; It seems that this macro cannot be added to emacs-tweaks, as it only gets
 ;; loaded during a later stage of Spacemacs initialization.
-(defmacro my=def-evar (elisp-var def-val evar-name)
+(defmacro my-def-evar (elisp-var def-val evar-name)
   "Define an Emacs variable from environment with defaults. Warn if
 differences were encountered."
   `(let* ((evar-val (or (getenv ,evar-name) ,def-val)))
@@ -32,8 +32,8 @@ differences were encountered."
        (message "WARN (expand-file-name def-val): %s and evar: %s=%s differ"
                 (expand-file-name ,def-val) ,evar-name evar-val))))
 
-(my=def-evar dev  "~/dev"          "dev")
-(my=def-evar dotf "~/dev/dotfiles" "dotf")
+(my-def-evar dev  "~/dev"          "dev")
+(my-def-evar dotf "~/dev/dotfiles" "dotf")
 
 (customize-set-variable 'package-archives
  ;; Default values

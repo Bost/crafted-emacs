@@ -230,7 +230,7 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun my=shell-readlink (file)
+(defun my-shell-readlink (file)
   "Execute the `readlink FILE` command in the current shell."
   (funcall
    (-compose
@@ -241,7 +241,7 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
     (-partial #'list "readlink"))
    file))
 
-(defun my=delete-other-windows ()
+(defun my-delete-other-windows ()
   "docstring"
   (interactive)
 ;;;;  ;; See definitions of `treemacs'
@@ -253,16 +253,16 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
   (delete-other-windows)
   )
 
-(defun my=racket-repl-clear ()
+(defun my-racket-repl-clear ()
   (interactive)
   (let ((inhibit-read-only t))
     ;; (erase-buffer)
     (delete-region (point-min) (- (point-max) 2))))
 
-(defun my=H-1 () (interactive) (message "H-1"))
-(defun my=H-2 () (interactive) (message "H-2"))
-(defun my=H-3 () (interactive) (message "H-3"))
-(defun my=H-4 () (interactive) (message "H-4"))
+(defun my-H-1 () (interactive) (message "H-1"))
+(defun my-H-2 () (interactive) (message "H-2"))
+(defun my-H-3 () (interactive) (message "H-3"))
+(defun my-H-4 () (interactive) (message "H-4"))
 
 ;;; beg: from spacemacs/layers/+spacemacs/spacemacs-defaults/keybindings.el
 (defun split-window-below-and-focus ()
@@ -284,10 +284,64 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
     (golden-ratio)))
 ;;; end: from spacemacs/layers/+spacemacs/spacemacs-defaults/keybindings.el
 
-(defun my=eval-bind-keys-and-chords ()
+(require 'shell)
+(require 'shell-pop)
+(require 'term)
+(require 'vterm)
+(require 'multi-term)
+(require 'multi-vterm)
+
+(defun multiterm (&optional ARG)
+  "Wrapper to be able to call multi-term from shell-pop"
+  (interactive)
+  (multi-term))
+
+(defun multivterm (&optional ARG)
+  "Wrapper to be able to call multi-vterm from shell-pop"
+  (interactive)
+  (multi-vterm))
+
+(defvar shell-default-width 30
+  "Width in percents for the shell window.")
+
+(setq shell-pop-window-position 'right
+      shell-pop-window-size     30
+      shell-pop-term-shell      shell-file-name
+      shell-pop-full-span       t)
+
+(defun spacemacs/resize-shell-to-desired-width ()
+  (when (and (string= (buffer-name) shell-pop-last-shell-buffer-name)
+             (memq shell-pop-window-position '(left right)))
+    (enlarge-window-horizontally (- (/ (* (frame-width) shell-default-width)
+                                       100)
+                                    (window-width)))))
+
+(defun spacemacs/shell-pop-multiterm (index)
+  "Toggle a popup window with `multiterm'.
+
+Multiple shells can be opened with a numerical prefix
+argument. Using the universal prefix argument will open the shell
+in the current buffer instead of a popup buffer."
+  (interactive "P")
+  (require 'shell-pop)
+  (if (equal '(4) index)
+      (multiterm nil)
+    (shell-pop--set-shell-type
+     'shell-pop-shell-type
+     (list "multiterm"
+           (concat "*Default-"
+                   (if (file-remote-p default-directory)
+                       "remote-" "")
+                   "multiterm" "*")
+           (lambda nil
+             (multiterm nil))))
+    (shell-pop index)
+    (spacemacs/resize-shell-to-desired-width)))
+
+(defun my-eval-bind-keys-and-chords ()
   "To activate changes, do:
-    ~s-d~ my=eval-current-defun
-    ~s-+~ my=eval-bind-keys-and-chords
+    ~s-d~ my-eval-current-defun
+    ~s-+~ my-eval-bind-keys-and-chords
 
 Some binding snippets / examples:
   (global-set-key (kbd \"s-<f2>\") \\='eshell)
@@ -341,7 +395,7 @@ Some binding snippets / examples:
 
    ;; the funny keys can be seen
    ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2008-11/msg00011.html
-   ("C-s-<268632070>" . my=H-3) ;; this is probably for an Apple computers
+   ("C-s-<268632070>" . my-H-3) ;; this is probably for an Apple computers
    ("<escape>"  . keyboard-escape-quit)
 
    ("M-Q"       . unfill-paragraph)
@@ -359,7 +413,7 @@ Some binding snippets / examples:
    ("s-k"       . kb-close-buffer)
    ("s-s"       . save-buffer)
    ("s-0"       . tw-delete-window)
-   ("s-1"       . my=delete-other-windows)
+   ("s-1"       . my-delete-other-windows)
    ("S-s-<f8>"    . ace-swap-window)
    ;; ("S-s-<f8>" . transpose-frame)
 ;;;;     ("s-N"       . spacemacs/cycle-defun-narrow-modes)
@@ -370,7 +424,7 @@ Some binding snippets / examples:
    ;; ("s-3"    . spacemacs/window-split-double-columns)
    ;; see ~SPC w /~ and ~SPC w 2~
    ("s-3"       . split-window-right-and-focus)
-;;;;     ("s-9"       . my=load-layout)
+;;;;     ("s-9"       . my-load-layout)
    ("s-+"       . tw-eval-bind-keys-and-chords)
    ("s-<kp-add>". tw-eval-bind-keys-and-chords)
    ("s-z"       . tw-buffer-selection-show)
@@ -411,26 +465,26 @@ Some binding snippets / examples:
    ("<f3>"   . tw-search-region-or-symbol) ; advice-d
 ;;;;     ("M-<f3>" . spacemacs/hsearch-project)  ; advice-d
 
-;;;;     ("s-a"    . helm-mini) ;; advice-d
-;;;;     ("s-]"    . helm-mini)
-;;;;     ;; helm-mini doesn't show all buffers when using layouts (~SPC l~)
+   ("s-a"    . helm-mini) ;; advice-d
+   ("s-]"    . helm-mini)
+   ;; helm-mini doesn't show all buffers when using layouts (~SPC l~)
 ;;;;     ("C-s-a"  . spacemacs-layouts/non-restricted-buffer-list-helm) ; advice-d
 
-;;;;     ("s-B"    . helm-filtered-bookmarks)
-;;;;     ("<f9>"   . helm-filtered-bookmarks)
-;;;;     ;; ("s-p" . helm-projectile)
-;;;;     ("s-p"    . helm-projectile-find-file)
+   ("s-B"    . helm-filtered-bookmarks)
+   ("<f9>"   . helm-filtered-bookmarks)
+   ;; ("s-p" . helm-projectile)
+   ("s-p"    . helm-projectile-find-file)
 ;;;;     ("s-P"    . spacemacs/helm-persp-switch-project) ; advice-d
-;;;;     ("s-f"    . helm-find-files)
-;;;;     ("s-F"    . helm-recentf)
-;;;;     ;; Can't use `advice'. This is an advice for the binding, not the function
-;;;;     ("s-r"    . (lambda ()
-;;;;                   (interactive) (helm-recentf)
-;;;;                   (message "Use ~s-F~ instead of ~s-r~ for M-x helm-recentf")))
-;;;;     ("M-y"    . helm-show-kill-ring)   ; replaces evil-paste-pop
-;;;;     ("s-G"    . helm-google-suggest)
-;;;;     ("s-/"    . helm-swoop)                          ; advice-d
-;;;;     ("s-?"    . helm-multi-swoop-all)
+   ("s-f"    . find-file)
+   ("s-F"    . recentf)
+   ;; Can't use `advice'. This is an advice for the binding, not the function
+   ("s-r"    . (lambda ()
+                 (interactive) (helm-recentf)
+                 (message "Use ~s-F~ instead of ~s-r~ for M-x helm-recentf")))
+   ("M-y"    . helm-show-kill-ring)   ; replaces evil-paste-pop
+   ("s-G"    . helm-google-suggest)
+   ("s-/"    . helm-swoop)                          ; advice-d
+   ("s-?"    . helm-multi-swoop-all)
 ;;;;     ("s-l"    . lazy-helm/spacemacs/resume-last-search-buffer)
 
    ;; TODO crux-duplicate-current-line-or-region gets confused with registry
@@ -575,15 +629,16 @@ Some binding snippets / examples:
    ;; Set xfce4-keyboard-settings -> Layout -> Compose key: -
    ;; <menu> is not a prefix key. See:
    ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Prefix-Keys.html
-   ("H-1" . my=H-1) ;; this doesn't work ("C-c h 1" . my=H-1)
-   ("H-2" . my=H-2)
-   ("H-4" . my=H-4) ;; this doesn't work ("C-c h 4" . my=H-4)
+   ("H-1" . my-H-1) ;; this doesn't work ("C-c h 1" . my-H-1)
+   ("H-2" . my-H-2)
+   ("H-4" . my-H-4) ;; this doesn't work ("C-c h 4" . my-H-4)
    )
   (message "%s   Note: %s"
-           "(my=eval-bind-keys-and-chords) evaluated"
+           "(my-eval-bind-keys-and-chords) evaluated"
            "~SPC k $~ sp-end-of-sexp")
   )
-(my=eval-bind-keys-and-chords)
+
+(my-eval-bind-keys-and-chords)
 
 ;; TODO This doesn't work:
 ;; (with-eval-after-load 'magit-status-mode
@@ -612,7 +667,7 @@ Some binding snippets / examples:
              ("C-3" . magit-section-show-level-3)
              ("C-4" . magit-section-show-level-4)))
 
-(defun my=evil-keybindings-in-term (map)
+(defun my-evil-keybindings-in-term (map)
   "Fix evil keybindings in terminals. Alternatively just disable evil-mode:
   (evil-set-initial-state 'term-mode 'emacs)
 See also:
@@ -646,7 +701,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
 ;;;
 (with-eval-after-load 'multi-term
   ;; term-mode-map is apparently not needed
-  (mapcar #'my=evil-keybindings-in-term '(term-raw-map)))
+  (mapcar #'my-evil-keybindings-in-term '(term-raw-map)))
 
 (bind-keys :map dired-mode-map
            ("<f5>"        . tw-revert-buffer-no-confirm)
@@ -718,7 +773,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ("<C-right>"    . right-word)
              ("<C-left>"     . left-word)))
 
-(defun my=clj-bind-keys-and-chords (map)
+(defun my-clj-bind-keys-and-chords (map)
   (bind-keys :map map
              ;; on German keyboard the #-key is next to the Enter-key
              ("C-s-\\" . tw-clj-toggle-reader-comment-current-sexp)
@@ -734,8 +789,8 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
                          (tw-insert-str "(remove (fn []))" 3)))
                ("fi" . tw-clj-insert-filter-fn)
                ("de" . tw-clj-insert-defn)
-               ;; ("db" . my=clj-insert-debugf)
-               ;; ("dg" . my=clj-insert-debugf)
+               ;; ("db" . my-clj-insert-debugf)
+               ;; ("dg" . my-clj-insert-debugf)
                ("df" . tw-clj-insert-fn)
                ("ds" . tw-clj-insert-doseq)
                ("fn" . tw-clj-insert-fn)
@@ -749,7 +804,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
                ("ma" . tw-clj-insert-map-fn)))
 
 (with-eval-after-load 'cider-repl-mode
-  (my=clj-bind-keys-and-chords cider-repl-mode-map)
+  (my-clj-bind-keys-and-chords cider-repl-mode-map)
   (bind-keys :map cider-repl-mode-map
              ("<menu>" . tw-stop-synths-metronoms)
              ("s-h"    . helm-cider-history)
@@ -761,7 +816,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ("<C-s-delete>" . cider-repl-clear-buffer)))
 
 (with-eval-after-load 'clojure-mode
-  (my=clj-bind-keys-and-chords clojure-mode-map)
+  (my-clj-bind-keys-and-chords clojure-mode-map)
   (bind-keys :map clojure-mode-map
              ("s-d"    . cider-eval-defun-at-point)
              ("s-x"    . tw-cider-switch-to-repl-buffer)
@@ -897,7 +952,7 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
             (bind-keys :map debugger-mode-map
                        ("C-g" . debugger-quit))))
 
-(defun my=fn-kbind-scheme (map)
+(defun my-fn-kbind-scheme (map)
   (lambda ()
     (bind-keys :map map
                ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
@@ -913,10 +968,10 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
                  ("le" . tw-scheme-insert-let*)
                  ("pr" . tw-scheme-insert-log))))
 
-(defun my=fn-kbind-racket (map)
+(defun my-fn-kbind-racket (map)
   (lambda ()
     (bind-keys :map map
-               ("<C-s-delete>" . my=racket-repl-clear)
+               ("<C-s-delete>" . my-racket-repl-clear)
                ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
                ("C-s-p"  . tw-racket-insert-log)
                ("M-s-d"  . tw-racket-insert-fn)
@@ -960,15 +1015,15 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;; See M-x helm-descbinds
 (with-eval-after-load 'racket-mode
   (mapcar (-partial #'apply #'add-hook)
-          `((racket-mode-hook      ,(my=fn-kbind-racket racket-mode-map))
-            (racket-repl-mode-hook ,(my=fn-kbind-racket racket-repl-mode-map)))))
+          `((racket-mode-hook      ,(my-fn-kbind-racket racket-mode-map))
+            (racket-repl-mode-hook ,(my-fn-kbind-racket racket-repl-mode-map)))))
 
 ;; For scm-files the bindings are available via minor mode bindings for
 ;; geiser-mode, not for scheme-mode. See M-x helm-descbinds
 (with-eval-after-load 'geiser-mode
   (mapcar (-partial #'apply #'add-hook)
-          `((geiser-mode-hook      ,(my=fn-kbind-scheme geiser-mode-map))
-            (geiser-repl-mode-hook ,(my=fn-kbind-scheme geiser-repl-mode-map)))))
+          `((geiser-mode-hook      ,(my-fn-kbind-scheme geiser-mode-map))
+            (geiser-repl-mode-hook ,(my-fn-kbind-scheme geiser-repl-mode-map)))))
 
 (with-eval-after-load 'scheme-mode
   (font-lock-add-keywords
@@ -1000,7 +1055,7 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 
 (advice-add #'tw-search-region-or-symbol
             :after
-            (defun my=note--my=search-region-or-symbol (&optional _)
+            (defun my-note--my-search-region-or-symbol (&optional _)
               (let ((p "[advice tw-search-region-or-symbol] "))
                 (message
                  (concat
@@ -1010,21 +1065,21 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
                   p "2. ~M-<f3>~ for M-x spacemacs/hsearch-project")))))
 
 (advice-add #'split-window-right-and-focus
-            :after (defun my=recenter-top-bottom ()
+            :after (defun my-recenter-top-bottom ()
                      ;; needed cause the (recenter-top-bottom) has
                      ;; (interactive "P")
                      (recenter-top-bottom)))
 (advice-add #'whitespace-cleanup
-            :after (defun my=whitespace-cleanup ()
+            :after (defun my-whitespace-cleanup ()
                      (message "[advice whitespace-cleanup] done")))
 (advice-add #'evil-avy-goto-char-timer
-            :after (defun my=note--evil-avy-goto-char-timer (_)
+            :after (defun my-note--evil-avy-goto-char-timer (_)
                      (message
                       "[advice evil-avy-goto-char-timer] %s"
                       "Also ~SPC j j~, ~<f2>~")))
 (advice-add #'evil-avy-goto-line
             :after
-            (defun my=note--evil-avy-goto-line (&optional _)
+            (defun my-note--evil-avy-goto-line (&optional _)
               (message
                "[advice evil-avy-goto-line] %s"
                "Also ~SPC j l~, ~M-m j l~, ~<C-f2>~, ~C-s-/~")))
@@ -1042,7 +1097,7 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
  ;; (lambda (&optional COUNT)
  ;;   (interactive)
  ;;   (evil-scroll-line-to-center)
- ;;   ;; (setq my=line-before (line-number-at-pos))
+ ;;   ;; (setq my-line-before (line-number-at-pos))
  ;;   )
  ;; ;; convenient name for identifying or removing this advice later
  ;; '((name . "before-search"))
@@ -1075,20 +1130,20 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
             :before #'tw-helm-mini)
 (advice-add #'helm-mini
             :after
-            (defun my=note--evil-avy-goto-char-timer ()
+            (defun my-note--evil-avy-goto-char-timer ()
               (message
                "[advice helm-mini] %s"
                "Toggle mark / unmark all buffers: ~M-m~")))
 (advice-add #'spacemacs/helm-persp-switch-project
             :after
-            (defun my=note--spacemacs/helm-persp-switch-project (_)
+            (defun my-note--spacemacs/helm-persp-switch-project (_)
               (message
                "[advice spacemacs/helm-persp-switch-project] %s"
                "Try: ~SPC p p~ for M-x helm-projectile-switch-project")))
 
 (advice-add #'spacemacs/toggle-menu-bar
             :after
-            (defun my=note--spacemacs/toggle-menu-bar ()
+            (defun my-note--spacemacs/toggle-menu-bar ()
               (message
                "[advice spacemacs/toggle-menu-bar] %s"
                "Try also: ~M-`~ for M-x tmm-menubar")))
