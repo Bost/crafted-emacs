@@ -35,6 +35,8 @@
    jump-last
    kill-buffers
    tweaks
+   spacemacs-auto-highlight
+   ;; frame ;; for toggle-frame-fullscreen
    ))
 
 (dolist (package modules-and-packages)
@@ -45,13 +47,13 @@
 
 (crafted-package-install-package 'doom-themes)
 (progn
-  (disable-theme 'deeper-blue)          ; first turn off the deeper-blue theme
+  ;; (disable-theme 'deeper-blue)          ; first turn off the deeper-blue theme
   ;; (load-theme 'doom-palenight t)     ; load the doom-palenight theme
-  (load-theme 'doom-one t)
-  ;; (load-theme 'doom-solarized-light t)
+  ;; (load-theme 'doom-one t)
+  (load-theme 'doom-solarized-light t)
   )
 
-(defun spacemacs/mplist-remove (plist prop)
+(defun spacemacs-mplist-remove (plist prop)
   "Return a copy of a modified PLIST without PROP and its values.
 
 If there are multiple properties with the same keyword, only the first property
@@ -90,8 +92,8 @@ The return value is nil if no font was found, truthy otherwise."
         (message "%s find-font" context)
         (let* ((font (car plist))
                (props (cdr plist))
-               ;; TODO there's a bug in spacemacs/mplist-remove
-               (font-props (spacemacs/mplist-remove props :powerline-offset))
+               ;; TODO there's a bug in spacemacs-mplist-remove
+               (font-props (spacemacs-mplist-remove props :powerline-offset))
                (fontspec (apply 'font-spec :name font font-props)))
           (message "%s Setting font \"%s\"..." context font)
           ;; We set the INHIBIT-CUSTOMIZE parameter to t to tell set-frame-font
@@ -111,8 +113,8 @@ The return value is nil if no font was found, truthy otherwise."
           ;; remove any size or height properties in order to be able to scale
           ;; the fallback fonts with the default one (for zoom-in/out for
           ;; instance)
-          (let* ((fallback-props (spacemacs/mplist-remove
-                                  (spacemacs/mplist-remove font-props :size)
+          (let* ((fallback-props (spacemacs-mplist-remove
+                                  (spacemacs-mplist-remove font-props :size)
                                   :height))
                  (fallback-spec (apply 'font-spec
                                        :name fallback-font-name
@@ -186,49 +188,18 @@ The return value is nil if no font was found, truthy otherwise."
              (truncate (* 10 point-size)))
    :weight 'normal))
 
-(message "%s set-default-font ..." context)
-(if (set-default-font default-font)
-    (message "%s set-default-font ... done" context)
-    (progn
-      (message "%s set-default-font ... failed" context)
-      (message "%s set-default-font-prot ... done" context)
-      (set-default-font-prot)
-      (message "%s set-default-font ... done" context)))
+;; (message "%s set-default-font ..." context)
+;; (if (set-default-font default-font)
+;;     (message "%s set-default-font ... done" context)
+;;     (progn
+;;       (message "%s set-default-font ... failed" context)
+;;       (message "%s set-default-font-prot ... done" context)
+;;       (set-default-font-prot)
+;;       (message "%s set-default-font ... done" context)))
 
-;; pulse modified regions
-;; https://github.com/minad/goggles
-
-;; alternative to copy-sexp.el
-;; TODO (pulse-momentary-highlight-region ...) ;; built-in
-
-;; For collaborative editing we need to setup a crdt sever at first!
-;; The docs is not clear about that.
-
-;; abcdw, Hello Andrew, I'd like to ask you how do you develop your emacs config in the rde project?
-;; I guess there's some impedancy between writing scheme code for emacs (i.e. for elisp code) so then when you want to try out the changes you need the evaluate the scheme code and that takes time, right?
-;; So ist there a way for to speed up that part of the development process?
-
-;; https://protesilaos.com/codelog/2023-12-18-emacs-org-advanced-literate-conf/
-(defun spacemacs//toggle-gui-elements (&optional on-off)
-  "Toggle menu bar, tool bar, scroll bars, and tool tip modes. If
-optional ON-OFF is not specified, then toggle on/off state. If
-ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
-  (when (fboundp 'scroll-bar-mode)
-    (scroll-bar-mode (or on-off (not scroll-bar-mode))))
-  (when  (fboundp 'tool-bar-mode)
-    (tool-bar-mode (or on-off (not tool-bar-mode))))
-  (unless (memq (window-system) '(mac ns))
-    (when (fboundp 'menu-bar-mode)
-      (menu-bar-mode (or on-off (not menu-bar-mode)))))
-  ;; tooltips in echo-aera
-  (when (fboundp 'tooltip-mode)
-    (tooltip-mode (or on-off (not tooltip-mode)))))
-
-(spacemacs//toggle-gui-elements 0)
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(message "%s set-default-font-prot ... done" context)
+(set-default-font-prot)
+(message "%s set-default-font ... done" context)
 
 (defun my-shell-readlink (file)
   "Execute the `readlink FILE` command in the current shell."
@@ -1217,3 +1188,71 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;; (define-key evil-insert-state-map (kbd "C-<tab>") 'copilot-accept-completion-by-word)
 ;; (define-key evil-insert-state-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
 ;;; github copilot config end
+
+;; Max column width of buffer names before truncate. (Default 20)
+(setq helm-buffer-max-length nil)
+
+;; Truncate lines in ‘helm-buffers-list’ when non-nil. (Default t)
+;; helm-buffer-max-length must be nil in order to have the buffer
+;; names not truncated
+(setq helm-buffers-truncate-lines nil)
+
+;; 1. Either turn off creation of backups entirely:
+(setq make-backup-files nil)
+;; 2. Or alternatively move the backups away
+;;   Emacs.org~
+;;   #Emacs.org#
+;;   .#Emacs.org
+;;   ~/.emacs.d/.lsp-session-v1
+;;   ~/.emacs.d/transient/
+;;   ~/.emacs.d/projectile-bookmarks.eld
+;; (setq
+;;  backup-directory-alist
+;;  `(("." . ,(expand-file-name "tmp/backups/" user-emacs-directory))))
+
+
+;; Don't create the lock file like .#Emacs.org. They appear when you
+;; have unsaved changes to a file in a buffer!
+;; Unfortunately these can’t be moved, but they can be disabled:
+(setq create-lockfiles nil)
+
+(beacon-mode)
+
+;; pulse modified regions
+;; https://github.com/minad/goggles
+
+;; alternative to copy-sexp.el
+;; TODO (pulse-momentary-highlight-region ...) ;; built-in
+
+;; For collaborative editing we need to setup a crdt sever at first!
+;; The docs is not clear about that.
+
+;; abcdw, Hello Andrew, I'd like to ask you how do you develop your emacs config in the rde project?
+;; I guess there's some impedancy between writing scheme code for emacs (i.e. for elisp code) so then when you want to try out the changes you need the evaluate the scheme code and that takes time, right?
+;; So ist there a way for to speed up that part of the development process?
+
+;; https://protesilaos.com/codelog/2023-12-18-emacs-org-advanced-literate-conf/
+(defun spacemacs-toggle-gui-elements (&optional on-off)
+  "Toggle menu bar, tool bar, scroll bars, and tool tip modes. If
+optional ON-OFF is not specified, then toggle on/off state. If
+ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
+  (when (fboundp 'scroll-bar-mode)
+    (scroll-bar-mode (or on-off (not scroll-bar-mode))))
+  (when  (fboundp 'tool-bar-mode)
+    (tool-bar-mode (or on-off (not tool-bar-mode))))
+  (unless (memq (window-system) '(mac ns))
+    (when (fboundp 'menu-bar-mode)
+      (menu-bar-mode (or on-off (not menu-bar-mode)))))
+  ;; tooltips in echo-aera
+  (when (fboundp 'tooltip-mode)
+    (tooltip-mode (or on-off (not tooltip-mode))))
+  ;; Doesn't work
+  ;; (toggle-frame-fullscreen)
+  )
+
+(spacemacs-toggle-gui-elements 0)
+
+;; Many files are created relative to user-emacs-directory already! We
+;; can change it in our config:
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs"))
+
