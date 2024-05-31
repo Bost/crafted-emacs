@@ -41,7 +41,8 @@
 
 (dolist (package modules-and-packages)
   ;; message does the prettyfing, we need to compose `print after format` functions
-  (print (format "%s (require '%s) ..." context package))
+  ;; (print (format "%s (require '%s) ..." context package))
+  (message "%s (require '%s) ..." context package)
   (require package))
 ;; (message "%s all requires done" context)
 
@@ -50,7 +51,7 @@
   ;; (disable-theme 'deeper-blue)          ; first turn off the deeper-blue theme
   ;; (load-theme 'doom-palenight t)     ; load the doom-palenight theme
   ;; (load-theme 'doom-one t)
-  (load-theme 'doom-solarized-light t)
+  ;; (load-theme 'doom-solarized-light t)
   )
 
 (defun spacemacs-mplist-remove (plist prop)
@@ -142,28 +143,28 @@ The return value is nil if no font was found, truthy otherwise."
 
 ;; (window-parameter (selected-window) 'no-delete-other-windows)
 
-(setq default-font
-      `("Source Code Pro"
-        :size
-        ,(let* ((hostname (system-name))
-                (default 10.0)
-                ;; The `text-scale-mode-step' is not accessible at this moment.
-                (text-scale-mode-step 1.2)
-                (point-size (cond
-                             ((string= hostname "edge") 19.0)
-                             ((or (string= hostname "ecke")
-                                  (string= hostname "tuxedo"))
-                              ;; (+ default (* 6 text-scale-mode-step)) ; 17.2
-                              (+ default (* 7 text-scale-mode-step)) ; 18.4
-                              )
-                             ;; TODO this is a pixel-size not point-size
-                             ((string= hostname "geek") 17)
-                             (t default))))
-           (message "%s default-font hostname: %s; point-size: %s"
-                    context hostname point-size)
-           point-size)
-        :weight normal
-        :width normal))
+;; (setq default-font
+;;       `("Source Code Pro"
+;;         :size
+;;         ,(let* ((hostname (system-name))
+;;                 (default 10.0)
+;;                 ;; The `text-scale-mode-step' is not accessible at this moment.
+;;                 (text-scale-mode-step 1.2)
+;;                 (point-size (cond
+;;                              ((string= hostname "edge") 19.0)
+;;                              ((or (string= hostname "ecke")
+;;                                   (string= hostname "tuxedo"))
+;;                               ;; (+ default (* 6 text-scale-mode-step)) ; 17.2
+;;                               (+ default (* 7 text-scale-mode-step)) ; 18.4
+;;                               )
+;;                              ;; TODO this is a pixel-size not point-size
+;;                              ((string= hostname "geek") 17)
+;;                              (t default))))
+;;            (message "%s default-font hostname: %s; point-size: %s"
+;;                     context hostname point-size)
+;;            point-size)
+;;         :weight normal
+;;         :width normal))
 
 (defun set-default-font-prot ()
   (set-face-attribute
@@ -864,6 +865,7 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;;
 ;; `parse-colon-path' returns a list with items containing trailing slash '/',
 ;; geiser-guile-load-path doesn't like it.
+(message "%s glp: %s" context (getenv "glp"))
 (when-let ((glp-env (getenv "glp")))
   (let ((glp (split-string glp-env ":"))
         (dgx (getenv "dgx")))
