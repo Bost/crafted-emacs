@@ -674,37 +674,22 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
   ;; term-mode-map is apparently not needed
   (mapcar #'my-evil-keybindings-in-term '(term-raw-map)))
 
-(bind-keys :map dired-mode-map
-           ("<f5>"        . tw-revert-buffer-no-confirm)
-           ;; ("<f5>"        . revert-buffer)
+(with-eval-after-load 'dired-mode
+  (bind-keys :map dired-mode-map
+             ("<f5>"        . tw-revert-buffer-no-confirm)
+             ;; ("<f5>"        . revert-buffer)
 
-           ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
-           ("C-s-h"       . tw-dired-dotfiles-toggle)
-           ("<backspace>" . (lambda () (interactive)
-                              (find-alternate-file "..")))
-           ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
-           ;; ("<return>"    . dired-find-alternate-file)
-           ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
-           ;; asks for file instead of opening it
-           ;; ("<return>"    . dired-x-find-file)
-           ("<return>"    . dired-find-file) ;; default
-           ("<S-delete>"  . tw-dired-do-delete))
-;; (with-eval-after-load 'dired-mode
-;;   (bind-keys :map dired-mode-map
-;;              ("<f5>"        . tw-revert-buffer-no-confirm)
-;;              ;; ("<f5>"        . revert-buffer)
-
-;;              ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
-;;              ("C-s-h"       . tw-dired-dotfiles-toggle)
-;;              ("<backspace>" . (lambda () (interactive)
-;;                                 (find-alternate-file "..")))
-;;              ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
-;;              ;; ("<return>"    . dired-find-alternate-file)
-;;              ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
-;;              ;; asks for file instead of opening it
-;;              ;; ("<return>"    . dired-x-find-file)
-;;              ("<return>"    . dired-find-file) ;; default
-;;              ("<S-delete>"  . tw-dired-do-delete)))
+             ;; Use ~C-s-h~ b/c ~C-H~ (shift-h) doesn't work
+             ("C-s-h"       . tw-dired-dotfiles-toggle)
+             ("<backspace>" . (lambda () (interactive)
+                                (find-alternate-file "..")))
+             ;; See https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
+             ;; ("<return>"    . dired-find-alternate-file)
+             ;; ("<return>"    . diredp-find-file-reuse-dir-buffer)
+             ;; asks for file instead of opening it
+             ;; ("<return>"    . dired-x-find-file)
+             ("<return>"    . dired-find-file) ;; default
+             ("<S-delete>"  . tw-dired-do-delete)))
 
 ;; (eval-after-load "dired"
 ;;   '(progn
