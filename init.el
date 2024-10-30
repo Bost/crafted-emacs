@@ -5,7 +5,7 @@
            (file-exists-p custom-file))
   (load custom-file nil :nomessage))
 
-(load "~/.emacs.d.distros/crafted-emacs/modules/crafted-init-config")
+(load (concat crafted-emacs-dir "modules/crafted-init-config"))
 
 (setq-local
  modules-and-packages

@@ -8,7 +8,12 @@
 ;;(setq initial-frame-alist '((fullscreen . maximized)))
 ;; 3 Setting default-frame-alist doesn't works (inspired by Spacemacs).
 (setq default-frame-alist
-      '(
+      `(
+        (icon-type . ,(concat user-emacs-directory
+                              ;; "personal/emacs_red.png"
+                              ;; "personal/emacs_green.png"
+                              ;; "personal/emacs_yellow.png"
+                              "personal/system-crafters-logo.png"))
         (fullscreen . maximized)
         (internal-border-width . 0)
         (undecorated . t)
@@ -26,6 +31,10 @@
 ;;          (while (looking-at "^.+$") (forward-line))
 ;;          (eval-region (point) (point-max))))
 
-(message "%s user-emacs-directory %s" context user-emacs-directory)
+;; user-emacs-directory is changed at the end of init.el from
+;;   "/home/bost/.emacs.d.distros/crafted-emacs/" to "/home/bost/.cache/emacs"
+;; after the start. Why?!?
+(setq crafted-emacs-dir user-emacs-directory)
+
 (load (expand-file-name "modules/crafted-early-init-config"
                         user-emacs-directory))
