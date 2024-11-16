@@ -13,7 +13,7 @@
                               ;; "personal/emacs_red.png"
                               ;; "personal/emacs_green.png"
                               ;; "personal/emacs_yellow.png"
-                              "personal/system-crafters-logo.png"))
+                              "system-crafters-logo.png"))
         (fullscreen . maximized)
         (internal-border-width . 0)
         (undecorated . t)
