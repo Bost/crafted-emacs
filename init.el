@@ -1262,4 +1262,41 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
              :nick (getenv "IRC_USER")
              :password (getenv "IRC_PASSWD"))))
 
+(defun my-package-load-all-descriptors ()
+  (message "(length package-alist) : %s" (length package-alist))
+  (let* ((dirs (cons package-user-dir package-directory-list)))
+    (message "my-package; (length dirs) : %s" (length dirs))
+    (dolist (dir (cons package-user-dir package-directory-list))
+      (when (file-directory-p dir)
+        (dolist (pkg-dir (directory-files dir t "\\`[^.]"))
+          (message "my-package; length package-alist : %s; file-directory-p %s : %s"
+                   (length package-alist) pkg-dir (file-directory-p pkg-dir))
+          (when (file-directory-p pkg-dir)
+            (package-load-descriptor pkg-dir)))))))
+
+(defun my-guix-emacs-load-package-descriptors ()
+  "Load descriptors for packages found in EMACSLOADPATH via subdirs.el."
+  (dolist (subdirs-file (guix-emacs--subdirs-files))
+    (with-temp-buffer
+      (insert-file-contents subdirs-file)
+      (goto-char (point-min))
+      (let ((subdirs (read (current-buffer))))
+        (and (equal (car-safe subdirs) 'normal-top-level-add-to-load-path)
+             (equal (car-safe (cadr subdirs)) 'list)
+             (dolist (subdir (cdadr subdirs))
+               (let ((pkg-dir (expand-file-name
+                               subdir (file-name-directory subdirs-file))))
+                 (when (file-directory-p pkg-dir)
+                   (message "my-guix; length package-alist : %s; file-directory-p %s : %s"
+                            (length package-alist) pkg-dir (file-directory-p pkg-dir))
+                   (package-load-descriptor pkg-dir)))))))))
+
+(advice-add 'my-package-load-all-descriptors
+            :after #'my-guix-emacs-load-package-descriptors)
+
+;; (when (require 'guix-emacs nil t)
+;;   (guix-emacs-autoload-packages 'no-reload)
+;;   (advice-add 'package-load-all-descriptors
+;;               :after #'guix-emacs-load-package-descriptors))
+
 (message "%s done" context)
