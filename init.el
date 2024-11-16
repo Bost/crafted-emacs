@@ -1243,3 +1243,5 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
 ;; can change it in our config:
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs"))
 
+;; activate origami-mode so that folding ~z a~ works
+(origami-mode)
