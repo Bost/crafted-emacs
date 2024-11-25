@@ -1245,3 +1245,19 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
 
 ;; activate origami-mode so that folding ~z a~ works
 (origami-mode)
+
+(setq
+ erc-fill-column 120
+ ;; erc-fill-function 'erc-fill-variable
+ erc-fill-function 'erc-fill-static
+ erc-fill-static-center 15
+ ;; erc-enable-notifications nil
+ erc-autojoin-channels-alist
+ '(("libera.chat" "#guix"
+    ;; "#systemcrafters"
+    ))
+ erc-prompt-for-nickserv-password nil
+ erc-server-list
+ (list (list "irc.libera.chat" :port "6667"
+             :nick (getenv "IRC_USER")
+             :password (getenv "IRC_PASSWD"))))
