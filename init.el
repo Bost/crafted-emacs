@@ -637,7 +637,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ;; asks for file instead of opening it
              ;; ("<return>"    . dired-x-find-file)
              ("<return>"    . dired-find-file) ;; default
-             ("<S-delete>"  . tw-dired-do-delete)))
+             ("S-<delete>"  . tw-dired-do-delete)))
 
 ;; (eval-after-load "dired"
 ;;   '(progn
@@ -674,8 +674,8 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
 (with-eval-after-load 'paredit-mode
   (bind-keys :map paredit-mode-map
              ;; these keybindings don't work in the cider-repl-mode-map
-             ("<C-right>"    . right-word)
-             ("<C-left>"     . left-word)))
+             ("C-<right>"    . right-word)
+             ("C-<left>"     . left-word)))
 
 (defun my-clj-bind-keys-and-chords (map)
   (bind-keys :map map
@@ -717,7 +717,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ("M-s-l"  . tw-cider-reload-ns-from-file)
              ("s-u"    . tw-cider-reload-ns-from-file)
              ;; invoke from clojure buffer
-             ("<C-s-delete>" . cider-repl-clear-buffer)))
+             ("C-s-<delete>" . cider-repl-clear-buffer)))
 
 (with-eval-after-load 'clojure-mode
   (my-clj-bind-keys-and-chords clojure-mode-map)
