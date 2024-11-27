@@ -622,7 +622,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
   ;; term-mode-map is apparently not needed
   (mapcar #'my-evil-keybindings-in-term '(term-raw-map)))
 
-(with-eval-after-load 'dired-mode
+(with-eval-after-load 'dired
   (bind-keys :map dired-mode-map
              ("<f5>"        . tw-revert-buffer-no-confirm)
              ;; ("<f5>"        . revert-buffer)
