@@ -38,6 +38,7 @@
    spacemacs-auto-highlight
    terminals
    ;; frame ;; for toggle-frame-fullscreen
+   helm
    ))
 
 (dolist (package modules-and-packages)
@@ -816,6 +817,8 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 (when-let ((glp-env (getenv "glp")))
   (let ((glp (split-string glp-env ":"))
         (dgx (getenv "dgx")))
+
+    (message "%s glp: %s" context glp)
     ;; https://emacs-guix.gitlab.io/website/manual/latest/html_node/Development.html
     (add-hook 'scheme-mode-hook #'guix-devel-mode)
 
