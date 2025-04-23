@@ -553,8 +553,9 @@ Some binding snippets / examples:
    ("H-2" . my-H-2)
    ("H-4" . my-H-4) ;; this doesn't work ("C-c h 4" . my-H-4)
    )
-  (message "%s   Note: %s"
-           "(my-eval-bind-keys-and-chords) evaluated"
+  (message "%s %s Note: %s"
+           context
+           "(my-eval-bind-keys-and-chords) evaluated."
            "~SPC k $~ sp-end-of-sexp")
   )
 
@@ -573,6 +574,8 @@ Some binding snippets / examples:
 ;;              ("s-\\" . magit-diff-toggle-refine-hunk)))
 
 (with-eval-after-load 'magit-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'magit-mode:")
   (bind-keys :map magit-mode-map
              ;; Workaround for the
              ;; https://github.com/emacs-evil/evil-collection/issues/554
@@ -585,7 +588,9 @@ Some binding snippets / examples:
              ("C-1" . magit-section-show-level-1)
              ("C-2" . magit-section-show-level-2)
              ("C-3" . magit-section-show-level-3)
-             ("C-4" . magit-section-show-level-4)))
+             ("C-4" . magit-section-show-level-4))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 (defun my-evil-keybindings-in-term (map)
   "Fix evil keybindings in terminals. Alternatively just disable evil-mode:
@@ -620,10 +625,16 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
 ;;;   (lambda (body) (with-eval-after-load 'multi-term body)))
 ;;;
 (with-eval-after-load 'multi-term
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'multi-term:")
   ;; term-mode-map is apparently not needed
-  (mapcar #'my-evil-keybindings-in-term '(term-raw-map)))
+  (mapcar #'my-evil-keybindings-in-term '(term-raw-map))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 (with-eval-after-load 'dired
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'dired:")
   (bind-keys :map dired-mode-map
              ("<f5>"        . tw-revert-buffer-no-confirm)
              ;; ("<f5>"        . revert-buffer)
@@ -638,7 +649,9 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ;; asks for file instead of opening it
              ;; ("<return>"    . dired-x-find-file)
              ("<return>"    . dired-find-file) ;; default
-             ("S-<delete>"  . tw-dired-do-delete)))
+             ("S-<delete>"  . tw-dired-do-delete))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 ;; (eval-after-load "dired"
 ;;   '(progn
@@ -673,13 +686,17 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
 ;;              (dired-goto-file dir))))))
 
 (with-eval-after-load 'paredit-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'paredit-mode:")
   (bind-keys :map paredit-mode-map
              ;; these keybindings don't work in the cider-repl-mode-map
              ("C-<right>"    . right-word)
-             ("C-<left>"     . left-word)))
+             ("C-<left>"     . left-word))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
-(defun my-clj-bind-keys-and-chords (map)
-  (bind-keys :map map
+(defun my-clj-bind-keys-and-chords (clj-keymap)
+  (bind-keys :map clj-keymap
              ;; on German keyboard the #-key is next to the Enter-key
              ("C-s-\\" . tw-clj-toggle-reader-comment-current-sexp)
              ("s-\\"   . tw-clj-toggle-reader-comment-fst-sexp-on-line)
@@ -687,7 +704,7 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ("s-e"   . cider-eval-last-sexp)
              ("s-j"   . cider-format-defun)
              ("s-i"   . cljr-rename-symbol))
-  (bind-chords :map map ; clojure-mode-map cider-repl-mode-map
+  (bind-chords :map clj-keymap ; clojure-mode-map cider-repl-mode-map
                ("pr" . (lambda () (interactive)
                          (tw-insert-str "(println \"\")" 2)))
                ("rm" . (lambda () (interactive)
@@ -709,6 +726,8 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
                ("ma" . tw-clj-insert-map-fn)))
 
 (with-eval-after-load 'cider-repl-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'cider-repl-mode:")
   (my-clj-bind-keys-and-chords cider-repl-mode-map)
   (bind-keys :map cider-repl-mode-map
              ("<menu>" . tw-stop-synths-metronoms)
@@ -718,9 +737,13 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ("M-s-l"  . tw-cider-reload-ns-from-file)
              ("s-u"    . tw-cider-reload-ns-from-file)
              ;; invoke from clojure buffer
-             ("C-s-<delete>" . cider-repl-clear-buffer)))
+             ("C-s-<delete>" . cider-repl-clear-buffer))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 (with-eval-after-load 'clojure-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'clojure-mode:")
   (my-clj-bind-keys-and-chords clojure-mode-map)
   (bind-keys :map clojure-mode-map
              ("s-d"    . cider-eval-defun-at-point)
@@ -744,7 +767,9 @@ https://github.com/emacs-evil/evil-collection/blob/master/modes/term/evil-collec
              ;; Send a (require ’ns :reload) to the REPL
              ;; ("s-o"  . cider-ns-reload)
 
-             ("C-s-o"   . tw-cider-clear-compilation-highlights)))
+             ("C-s-o"   . tw-cider-clear-compilation-highlights))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 (defun endless/sharp ()
   "Insert the function form abbreviation #' unless in a string
@@ -813,43 +838,58 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;;
 ;; `parse-colon-path' returns a list with items containing trailing slash '/',
 ;; geiser-guile-load-path doesn't like it.
-(message "%s glp: %s" context (getenv "glp"))
-(when-let ((glp-env (getenv "glp")))
-  (let ((glp (split-string glp-env ":"))
-        (dgx (getenv "dgx")))
+;; XXX geiser-mode problem? crafted-emacs crashes on (C-x C-v):
+;;   (find-alternate-file "/home/bost/dev/dotfiles/guix/systems/syst-ecke.scm")
+;; However this works for emacs-lisp-mode:
+;;   (find-alternate-file "/home/bost/.emacs.d.distros/crafted-emacs/init.el")
+(when-let ((glp-env (getenv "glp"))) ; when the environment variable is defined
+  ;; `glp' and `dgx' are referenced in (with-eval-after-load ...)
+  ;; macros. Can't bind them using (let ...). The bindings won't exist
+  ;; when the bodies of the macros are evaluated.
+  (setq glp (split-string glp-env ":"))
+  (setq dgx (getenv "dgx"))
 
-    (message "%s glp: %s" context glp)
-    ;; https://emacs-guix.gitlab.io/website/manual/latest/html_node/Development.html
-    (add-hook 'scheme-mode-hook #'guix-devel-mode)
+  ;; https://emacs-guix.gitlab.io/website/manual/latest/html_node/Development.html
+  (add-hook 'scheme-mode-hook #'guix-devel-mode)
 
-    ;; Put scheme code like e.g utils.scm on the geiser-guile-load-path
-    ;; TODO move this to project's .dir-locals.el
-    (with-eval-after-load 'geiser-guile
-      (mapcar
-       ;; Add ELEMENT to the value of LIST-VAR if it isn't there yet.
-       (-partial #'add-to-list 'geiser-guile-load-path)
-       glp))
-    (with-eval-after-load 'yasnippet
-      (add-to-list yas-snippet-dirs (concat dgx "/etc/snippets/yas")))
+  ;; Put scheme code like e.g utils.scm on the geiser-guile-load-path
+  ;; TODO move this to project's .dir-locals.el
+  (with-eval-after-load 'geiser-guile
+    (when (boundp 'context) (setq-local old-context context))
+    (setq-local context "with-eval-after-load 'geiser-guile:")
+    (mapcar
+     ;; Add ELEMENT to the value of LIST-VAR if it isn't there yet.
+     (-partial #'add-to-list 'geiser-guile-load-path)
+     glp)
+    (message "%s done" context)
+    (when (boundp 'old-context) (setq-local context old-context)))
 
-    ;; TODO extend the GuixOS with a service providing user full-name and email
-    ;; or parse (one of):
-    ;;   /run/current-system/configuration.scm
-    ;;   `guix system describe | rg "configuration file" | rg -o "/gnu/.*"`
+  (with-eval-after-load 'yasnippet
+    (when (boundp 'context) (setq-local old-context context))
+    (setq-local context "with-eval-after-load 'yasnippet:")
+    (add-to-list 'yas-snippet-dirs (concat dgx "/etc/snippets/yas"))
+    (message "%s done" context)
+    (when (boundp 'old-context) (setq-local context old-context)))
 
-    (setq
-     ;; Location for geiser-history.guile and geiser-history.racket. (Default
-     ;; "~/.geiser_history")
-     ;; geiser-repl-history-filename "..."
-     user-full-name         (getenv "user_full_name")
-     user-mail-address      (getenv "user_mail_address")
-     copyright-names-regexp (format "%s <%s>" user-full-name user-mail-address))
+  ;; TODO extend the GuixOS with a service providing user full-name and email
+  ;; or parse (one of):
+  ;;   /run/current-system/configuration.scm
+  ;;   `guix system describe | rg "configuration file" | rg -o "/gnu/.*"`
 
-    (load-file (concat dgx "/etc/copyright.el"))
-    ;; check if the copyright is up to date M-x copyright-update.
-    ;; automatically add copyright after each buffer save
-    ;; (add-hook 'after-save-hook 'copyright-update)
-    ))
+  (setq
+   ;; Location for geiser-history.guile and geiser-history.racket. (Default
+   ;; "~/.geiser_history")
+   ;; geiser-repl-history-filename "..."
+   user-full-name         (getenv "user_full_name")
+   user-mail-address      (getenv "user_mail_address")
+   copyright-names-regexp (format "%s <%s>" user-full-name user-mail-address))
+
+  (load-file (concat dgx "/etc/copyright.el"))
+  ;; check if the copyright is up to date M-x copyright-update.
+  ;; automatically add copyright after each buffer save
+  ;; (add-hook 'after-save-hook #'copyright-update)
+  )
+(message "%s when-let done" context)
 
 (add-hook 'python-mode-hook
           (lambda ()
@@ -860,9 +900,12 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
             (bind-keys :map debugger-mode-map
                        ("C-g" . debugger-quit))))
 
-(defun my-fn-kbind-scheme (map)
+(defun my-fn-kbind-scheme (scheme-keymap-prm)
+  ;; Need this, otherwise the scheme-keymap is not defined at the time when the
+  ;; lambda function is evaluated; setq-local doesn't work
+  (setq scheme-keymap scheme-keymap-prm)
   (lambda ()
-    (bind-keys :map map
+    (bind-keys :map scheme-keymap
                ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
                ("C-s-m"  . tw-scheme-insert-log)
                ("C-s-p"  . tw-scheme-insert-log)
@@ -872,13 +915,16 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
                ("s-d"    . geiser-eval-definition)
                ("s-e"    . geiser-eval-last-sexp)
                ("s-x"    . geiser-mode-switch-to-repl))
-    (bind-chords :map map
+    (bind-chords :map scheme-keymap
                  ("le" . tw-scheme-insert-let*)
                  ("pr" . tw-scheme-insert-log))))
 
-(defun my-fn-kbind-racket (map)
+(defun my-fn-kbind-racket (racket-keymap-prm)
+  ;; Need this, otherwise the racket-keymap is not defined at the time when the
+  ;; lambda function is evaluated; setq-local doesn't work
+  (setq racket-keymap racket-keymap-prm)
   (lambda ()
-    (bind-keys :map map
+    (bind-keys :map racket-keymap
                ("<C-s-delete>" . my-racket-repl-clear)
                ("C-s-\\" . tw-racket-toggle-reader-comment-current-sexp)
                ("C-s-p"  . tw-racket-insert-log)
@@ -888,7 +934,7 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
                ("s-e"    . racket-eval-last-sexp)
                ("s-o"    . racket-run-and-switch-to-repl)
                ("s-x"    . racket-repl))
-    (bind-chords :map map
+    (bind-chords :map racket-keymap
                  ("pr" . tw-racket-insert-log))))
 
 ;; (defun set-frame-theme (theme)
@@ -922,25 +968,36 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;; For rkt-files the bindings are available via major mode bindings.
 ;; See M-x helm-descbinds
 (with-eval-after-load 'racket-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'racket-mode:")
   (mapcar (-partial #'apply #'add-hook)
           `((racket-mode-hook      ,(my-fn-kbind-racket racket-mode-map))
-            (racket-repl-mode-hook ,(my-fn-kbind-racket racket-repl-mode-map)))))
+            (racket-repl-mode-hook ,(my-fn-kbind-racket racket-repl-mode-map))))
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 ;; For scm-files the bindings are available via minor mode bindings for
 ;; geiser-mode, not for scheme-mode. See M-x helm-descbinds
 (with-eval-after-load 'geiser-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'geiser-mode:")
   (mapcar (-partial #'apply #'add-hook)
           `((geiser-mode-hook      ,(my-fn-kbind-scheme geiser-mode-map))
-            (geiser-repl-mode-hook ,(my-fn-kbind-scheme geiser-repl-mode-map)))))
+            (geiser-repl-mode-hook ,(my-fn-kbind-scheme geiser-repl-mode-map))))
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 (with-eval-after-load 'scheme-mode
+  (when (boundp 'context) (setq-local old-context context))
+  (setq-local context "with-eval-after-load 'scheme-mode:")
   (font-lock-add-keywords
    'scheme-mode (mapcar (lambda (keyword)
                           `(,(concat "(" (regexp-quote keyword) "\\>")
                             . 'font-lock-keyword-face))
                         '("if-let")))
   ;; indentation for 'if-let' should be same as for e.g. 'let'.
-  (put 'if-let 'scheme-indent-function 1))
+  (put 'if-let 'scheme-indent-function 1)
+  (message "%s done" context)
+  (when (boundp 'old-context) (setq-local context old-context)))
 
 ;; advice, defadvice and letf shouldn't be used:
 ;; https://lists.gnu.org/archive/html/emacs-devel/2012-12/msg00146.html
@@ -1057,8 +1114,8 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
                "Try also: ~M-`~ for M-x tmm-menubar")))
 
 (mapcar
- (lambda (map)
-   (bind-keys :map map
+ (lambda (evil-keymap1)
+   (bind-keys :map evil-keymap1
 ;;; TODO workaround for (global-set-key (kbd "C-M-k") 'kill-sexp) overridden by
 ;;; layers/+misc/multiple-cursors/packages.el
               ("C-M-k" . kill-sexp)))
@@ -1077,9 +1134,9 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
 ;;                   ("C-M-k" . kill-sexp)))
 
 (mapcar
- (lambda (map)
+ (lambda (evil-keymap2)
    ;; Move by screen lines instead of logical (long) lines
-   (bind-keys :map map
+   (bind-keys :map evil-keymap2
               ("j" . evil-next-visual-line)
               ("k" . evil-previous-visual-line)))
  '(evil-motion-state-map evil-visual-state-map))
@@ -1211,3 +1268,5 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
  (list (list "irc.libera.chat" :port "6667"
              :nick (getenv "IRC_USER")
              :password (getenv "IRC_PASSWD"))))
+
+(message "%s done" context)
