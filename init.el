@@ -37,6 +37,7 @@
    tweaks
    spacemacs-auto-highlight
    terminals
+   ;; utils ;; my-with-eval-after-load
    ;; frame ;; for toggle-frame-fullscreen
    helm
    ))
@@ -855,21 +856,13 @@ https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html"
   ;; Put scheme code like e.g utils.scm on the geiser-guile-load-path
   ;; TODO move this to project's .dir-locals.el
   (with-eval-after-load 'geiser-guile
-    (when (boundp 'context) (setq-local old-context context))
-    (setq-local context "with-eval-after-load 'geiser-guile:")
     (mapcar
      ;; Add ELEMENT to the value of LIST-VAR if it isn't there yet.
      (-partial #'add-to-list 'geiser-guile-load-path)
-     glp)
-    (message "%s done" context)
-    (when (boundp 'old-context) (setq-local context old-context)))
+     glp))
 
   (with-eval-after-load 'yasnippet
-    (when (boundp 'context) (setq-local old-context context))
-    (setq-local context "with-eval-after-load 'yasnippet:")
-    (add-to-list 'yas-snippet-dirs (concat dgx "/etc/snippets/yas"))
-    (message "%s done" context)
-    (when (boundp 'old-context) (setq-local context old-context)))
+    (add-to-list 'yas-snippet-dirs (concat dgx "/etc/snippets/yas")))
 
   ;; TODO extend the GuixOS with a service providing user full-name and email
   ;; or parse (one of):
