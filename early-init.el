@@ -20,6 +20,14 @@
         (vertical-scroll-bars)
         ))
 
+;; (modify-frame-parameters
+;;  nil
+;;  `((icon-type . ,(concat user-emacs-directory
+;;                          ;; "personal/emacs_red.png"
+;;                          ;; "personal/emacs_green.png"
+;;                          ;; "personal/emacs_yellow.png"
+;;                          "system-crafters-logo.png"))))
+
 ;; Prevent warning what byte compilation fails - doesn't work
 ;;   Warning (comp): Error: Symbol's function definition is void make-tramp-file-name
 ;; See also https://elpa.gnu.org/packages/tramp.html
