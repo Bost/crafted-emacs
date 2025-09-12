@@ -57,153 +57,7 @@
   ;; (load-theme 'doom-solarized-light t)
   )
 
-(defun spacemacs-mplist-remove (plist prop)
-  "Return a copy of a modified PLIST without PROP and its values.
-
-If there are multiple properties with the same keyword, only the first property
-and its values are removed."
-  (let ((tail plist)
-        result)
-    (while (and (consp tail) (not (eq prop (car tail))))
-      (push (pop tail) result))
-    (when (eq prop (car tail))
-      (pop tail)
-      (while (and (consp tail) (not (keywordp (car tail))))
-        (pop tail)))
-    (while (consp tail)
-      (push (pop tail) result))
-    (nreverse result)))
-
-(defun set-default-font (plists)
-  "spacemacs/set-default-font from
- /home/bost/.emacs.d.distros/spacemacs/core/core-fonts-support.el
-
-Set the font given the passed PLISTS.
-
-PLISTS has either the form (\"fontname\" :prop1 val1 :prop2 val2 ...)
-or is a list of such. The first font that can be found will be used.
-
-The return value is nil if no font was found, truthy otherwise."
-  (unless (listp (car plists))
-    (setq plists (list plists)))
-  (catch 'break
-    (dolist (plist plists)
-      (message "%s (font-spec :name (car plist)) %s" context
-               (font-spec :name (car plist)))
-      (message "%s (find-font (font-spec :name (car plist))) %s"
-               context (find-font (font-spec :name (car plist))))
-      (when (find-font (font-spec :name (car plist)))
-        (message "%s find-font" context)
-        (let* ((font (car plist))
-               (props (cdr plist))
-               ;; TODO there's a bug in spacemacs-mplist-remove
-               (font-props (spacemacs-mplist-remove props :powerline-offset))
-               (fontspec (apply 'font-spec :name font font-props)))
-          (message "%s Setting font \"%s\"..." context font)
-          ;; We set the INHIBIT-CUSTOMIZE parameter to t to tell set-frame-font
-          ;; not to fiddle with the default face in the user's Customization
-          ;; settings. We don't need Customization because our way of ensuring
-          ;; that the font is applied to future frames is to modify
-          ;; default-frame-alist, and Customization causes issues, see
-          ;; https://github.com/syl20bnr/spacemacs/issues/5353.
-          ;; INHIBIT-CUSTOMIZE is only present in recent emacs versions.
-          (if (version< emacs-version "28.0.90")
-              (set-frame-font fontspec nil t)
-            (set-frame-font fontspec nil t t))
-          (push `(font . ,(frame-parameter nil 'font)) default-frame-alist)
-          ;; fallback font for unicode characters used in spacemacs
-          (setq fallback-font-name "NanumGothic")
-          (setq fallback-font-name2 "NanumGothic")
-          ;; remove any size or height properties in order to be able to scale
-          ;; the fallback fonts with the default one (for zoom-in/out for
-          ;; instance)
-          (let* ((fallback-props (spacemacs-mplist-remove
-                                  (spacemacs-mplist-remove font-props :size)
-                                  :height))
-                 (fallback-spec (apply 'font-spec
-                                       :name fallback-font-name
-                                       fallback-props)))
-            (message "fallback-props %s" fallback-props)
-            (message "fallback-spec %s" fallback-spec)
-            ;; window numbers (ding bang circled digits)
-            (set-fontset-font "fontset-default"
-                              '(#x2776 . #x2793) fallback-spec nil 'prepend)
-            ;; mode-line circled letters (circled latin capital/small letters)
-            (set-fontset-font "fontset-default"
-                              '(#x24b6 . #x24e9) fallback-spec nil 'prepend)
-            ;; mode-line additional characters (circled/squared
-            ;; mathematical operators)
-            (set-fontset-font "fontset-default"
-                              '(#x2295 . #x22a1) fallback-spec nil 'prepend)
-            ;; new version lighter (arrow block)
-            (set-fontset-font "fontset-default"
-                              '(#x2190 . #x21ff) fallback-spec nil 'prepend)))
-        (message "%s font set" context)
-        (throw 'break t)))
-    (progn
-      (message "%s find-font: false" context)
-      nil)))
-
 ;; (window-parameter (selected-window) 'no-delete-other-windows)
-
-;; (setq default-font
-;;       `("Source Code Pro"
-;;         :size
-;;         ,(let* ((hostname (system-name))
-;;                 (default 10.0)
-;;                 ;; The `text-scale-mode-step' is not accessible at this moment.
-;;                 (text-scale-mode-step 1.2)
-;;                 (point-size (cond
-;;                              ((string= hostname "edge") 19.0)
-;;                              ((or (string= hostname "ecke")
-;;                                   (string= hostname "tuxedo"))
-;;                               ;; (+ default (* 6 text-scale-mode-step)) ; 17.2
-;;                               (+ default (* 7 text-scale-mode-step)) ; 18.4
-;;                               )
-;;                              ;; TODO this is a pixel-size not point-size
-;;                              ((string= hostname "geek") 17)
-;;                              (t default))))
-;;            (message "%s default-font hostname: %s; point-size: %s"
-;;                     context hostname point-size)
-;;            point-size)
-;;         :weight normal
-;;         :width normal))
-
-(defun set-default-font-prot ()
-  (set-face-attribute
-   'default nil
-   :family "Source Code Pro"
-   :height (let* ((hostname (system-name))
-                  (default 10.0)
-                  ;; The `text-scale-mode-step' is not accessible at this moment.
-                  (text-scale-mode-step 1.2)
-                  (point-size (cond
-                               ((string= hostname "edge") 19.0)
-                               ((or (string= hostname "ecke")
-                                    (string= hostname "tuxedo"))
-                                ;; (+ default (* 6 text-scale-mode-step)) ; 17.2
-                                (+ default (* 7 text-scale-mode-step)) ; 18.4
-                                )
-                               ;; TODO this is a pixel-size not point-size
-                               ((string= hostname "geek") 17)
-                               (t default))))
-             (message "%s default-font hostname: %s; point-size: %s"
-                      context hostname point-size)
-             (truncate (* 10 point-size)))
-   :weight 'normal))
-
-;; (message "%s set-default-font ..." context)
-;; (if (set-default-font default-font)
-;;     (message "%s set-default-font ... done" context)
-;;     (progn
-;;       (message "%s set-default-font ... failed" context)
-;;       (message "%s set-default-font-prot ... done" context)
-;;       (set-default-font-prot)
-;;       (message "%s set-default-font ... done" context)))
-
-(message "%s set-default-font-prot ... done" context)
-(set-default-font-prot)
-(message "%s set-default-font ... done" context)
 
 (defun my-shell-readlink (file)
   "Execute the `readlink FILE` command in the current shell."
@@ -1261,5 +1115,133 @@ ON-OFF is 0 or 1, then turn gui elements OFF or ON respectively."
  (list (list "irc.libera.chat" :port "6667"
              :nick (getenv "IRC_USER")
              :password (getenv "IRC_PASSWD"))))
+
+(setq
+ dotspacemacs-default-font
+ `("Source Code Pro"
+   :size
+   ,(let* ((template-default 10.0)
+           (point-size (cond
+                        ((string= system-name "edge") 19.0)
+                        ((or (string= system-name "ecke")
+                             (string= system-name "tuxedo"))
+                         (+ template-default
+                            (* 5 (if (boundp 'text-scale-mode-step)
+                                     text-scale-mode-step
+                                   1.2))))
+                        ;; TODO this is a pixel-size not point-size
+                        ((string= system-name "geek") 17)
+                        (t template-default))))
+      ;; (message
+      ;;  "### dotspacemacs-default-font system-name: %s; point-size: %s"
+      ;;  system-name point-size)
+      point-size)
+   :weight normal
+   :width normal))
+
+(defun spacemacs-buffer/message (msg &rest args)
+  "Display MSG in *Messages* prepended with '(Spacemacs)'.
+The message is displayed only if `init-file-debug' is non nil.
+ARGS: format string arguments."
+  (when init-file-debug
+    (message "(Spacemacs) %s" (apply 'format msg args))))
+
+(defun spacemacs/mplist-remove (plist prop)
+  "Return a copy of a modified PLIST without PROP and its values.
+
+If there are multiple properties with the same keyword, only the first property
+and its values are removed."
+  (let ((tail plist)
+        result)
+    (while (and (consp tail) (not (eq prop (car tail))))
+      (push (pop tail) result))
+    (when (eq prop (car tail))
+      (pop tail)
+      (while (and (consp tail) (not (keywordp (car tail))))
+        (pop tail)))
+    (while (consp tail)
+      (push (pop tail) result))
+    (nreverse result)))
+
+(defun spacemacs/set-default-font (plists)
+  "Set the font given the passed PLISTS.
+
+PLISTS has either the form (\"fontname\" :prop1 val1 :prop2 val2 ...)
+or is a list of such. The first font that can be found will be used.
+
+The return value is nil if no font was found, truthy otherwise."
+  (unless (listp (car plists))
+    (setq plists (list plists)))
+  (catch 'break
+    (dolist (plist plists)
+      (when (find-font (font-spec :name (car plist)))
+        (let* ((font (car plist))
+               (props (cdr plist))
+               (font-props (spacemacs/mplist-remove
+                            ;; although this keyword does not exist anymore
+                            ;; we keep it for backward compatibility
+                            (spacemacs/mplist-remove props :powerline-scale)
+                            :powerline-offset))
+               (fontspec (apply 'font-spec :name font font-props)))
+          (spacemacs-buffer/message "Setting font \"%s\"..." font)
+          ;; We set the INHIBIT-CUSTOMIZE parameter to t to tell set-frame-font
+          ;; not to fiddle with the default face in the user's Customization
+          ;; settings. We don't need Customization because our way of ensuring
+          ;; that the font is applied to future frames is to modify
+          ;; default-frame-alist, and Customization causes issues, see
+          ;; https://github.com/syl20bnr/spacemacs/issues/5353.
+          ;; INHIBIT-CUSTOMIZE is only present in recent emacs versions.
+          (set-frame-font fontspec nil t t)
+          (push `(font . ,(frame-parameter nil 'font)) default-frame-alist)
+
+          ;; Make sure that our font is used for fixed-pitch face as well
+          (set-face-attribute 'fixed-pitch nil :family 'unspecified)
+
+          ;; fallback font for unicode characters used in spacemacs
+          (cl-destructuring-bind (fallback-font-name fallback-font-name2)
+              (cl-case system-type
+                ((gnu/linux android) '("NanumGothic"      "NanumGothic"))
+                ((darwin)            '("Arial Unicode MS" "Arial Unicode MS"))
+                ((windows-nt cygwin) '("MS Gothic"        "Lucida Sans Unicode"))
+                (t nil))
+            (when (and fallback-font-name fallback-font-name2)
+              ;; remove any size or height properties in order to be able to
+              ;; scale the fallback fonts with the default one (for zoom-in/out
+              ;; for instance)
+              (let* ((fallback-props (spacemacs/mplist-remove
+                                      (spacemacs/mplist-remove font-props :size)
+                                      :height))
+                     (fallback-spec (apply 'font-spec
+                                           :name fallback-font-name
+                                           fallback-props))
+                     (fallback-spec2 (apply 'font-spec
+                                            :name fallback-font-name2
+                                            fallback-props)))
+                ;; window numbers (ding bang circled digits)
+                (set-fontset-font "fontset-default"
+                                  '(#x2776 . #x2793) fallback-spec nil 'prepend)
+                ;; mode-line circled letters (circled latin capital/small letters)
+                (set-fontset-font "fontset-default"
+                                  '(#x24b6 . #x24e9) fallback-spec nil 'prepend)
+                ;; mode-line additional characters (circled/squared mathematical operators)
+                (set-fontset-font "fontset-default"
+                                  '(#x2295 . #x22a1) fallback-spec nil 'prepend)
+                ;; new version lighter (arrow block)
+                (set-fontset-font "fontset-default"
+                                  '(#x2190 . #x21ff) fallback-spec2 nil 'prepend)))))
+        (throw 'break t)))
+    nil))
+
+(message "%s setup fonts ..." context)
+(defun setup-fonts ()
+  "Setup fonts for current frame."
+  (when (display-graphic-p)
+    (spacemacs/set-default-font dotspacemacs-default-font)))
+
+(when (daemonp)
+  (add-hook 'after-make-frame-functions
+            (lambda (frame)
+              (with-selected-frame frame (setup-fonts)))))
+;; (message "%s setup fonts ...done" context)
 
 (message "%s done" context)
