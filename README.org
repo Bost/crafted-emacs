@@ -298,6 +298,31 @@ community!
    package you are installing, and anything you might have tried but
    which didn't work for you.
 
+** Tree-sitter issues
+
+   If you are enabling the IDE module for Crafted Emacs, be aware of several
+   issues related to tree-sitter. To make things as simple as possible, we use a
+   package called ~treesit-auto~ to facilitate loading packages. However, there
+   have been a few issues loading *all* the grammars. Several just don't
+   work, and they cause errors in configuration.  Crafted Emacs configuration on
+   this takes the approach of "opt-in" and suggests (strongly!) that *only* the
+   grammars needed be loaded. Even with that said, there have been problems with
+   the following (as of May 2026):
+
+   - cobol
+   - janet
+   - jsdoc
+   - latex
+   - markdown
+   - phpdoc
+   - proto
+   - swift
+   - verilog
+   - wsgl
+
+   [[https://github.com/SystemCrafters/crafted-emacs/issues?q=is%3Aissue%20tree-sitter][Here]] is a list of issues people have run into using tree-sitter.
+
+   
 * License
 :PROPERTIES:
 :custom_id: license
